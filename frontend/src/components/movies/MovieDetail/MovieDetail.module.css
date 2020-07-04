@@ -1,3 +1,11 @@
+.MovieDetails {
+    display: felx;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
 h1 {
     margin: 5vh 2vh;
     font-size: 2.5rem;

@@ -61,7 +61,7 @@ class App extends React.Component {
               <MoviesList moviesList={this.state.moviesList} movieDetailViewHandler={this.movieDetailViewHandler} />
             </div>
             :
-            <MovieDetail movie={this.state.currentMovie} movieDetailCloseHandler={this.movieDetailCloseHandler} />
+            <MovieDetail movie={this.state.currentMovie} movieDetailViewHandler={this.movieDetailViewHandler} movieDetailCloseHandler={this.movieDetailCloseHandler} />
         }
 
       </div>
