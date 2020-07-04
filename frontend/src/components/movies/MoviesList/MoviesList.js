@@ -1,17 +1,17 @@
 import React from 'react';
 import Movie from '../Movie';
 
+import Styles from './MoviesList.module.css'
 
 const MoviesList = (props) => {
     return (
-        <div className="MoviesList">
+        <div className={Styles.MoviesList}>
             {
                 props.moviesList.map((movie, i) => {
                     return (
                         <Movie
                             key={i}
-                            image={movie.poster_path}
-                            movieID={movie.id}
+                            movie={movie}
                             movieDetailViewHandler={props.movieDetailViewHandler}
                         />
                     )
