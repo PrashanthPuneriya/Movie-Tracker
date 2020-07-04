@@ -3,15 +3,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 2vh;
-}
-
-.movie-img {
-
+    margin: 2vh 5vh;
 }
 
 .movie-title:hover {
     cursor: pointer;
     text-decoration: underline;
-    
 }

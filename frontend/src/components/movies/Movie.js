@@ -13,7 +13,7 @@ const Movie = (props) => {
                         <img src={`https://image.tmdb.org/t/p/w300${props.movie.poster_path}`} alt="" />
                 }
             </div>
-            <div className={styles["movie-title"]} onClick={ () => props.movieDetailViewHandler(props.movie.id) }>
+            <div className={styles["movie-title"]} onClick={() => props.movieDetailViewHandler(props.movie.id)}>
                 <h4>{props.movie.title}</h4>
             </div>
         </div>
