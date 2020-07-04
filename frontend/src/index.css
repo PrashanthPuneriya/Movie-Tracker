@@ -9,8 +9,7 @@
 }
 
 body {
-  font-family: 'Poppins', 'EB Garamond', sans-serif;
+  font-family: 'Poppins', sans-serif, 'EB Garamond';
   /* font-weight: 200; */
-  /* font-size: 1.4rem; */
   background-color: #eeecec;
 }
