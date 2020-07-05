@@ -34,10 +34,11 @@ class SearchArea extends React.Component {
         return (
             <div>
                 <div className={styles.SearchArea}>
-                    <h3>Search for the Movies to Track</h3>
+                    <p>Search for the Movies to Track</p>
                     <form className={styles['search-form']} action="" onSubmit={this.movieInputSubmitHandler}>
-                        <input type="text" onChange={this.movieInputChangeHandler} className={styles['movie-input-value']} id="movie-input-value" placeholder="Search Movies..." />
-                        <button className={styles['search-button']} id="search-button" value="Submit">Search</button>
+                        <input type="text" onChange={this.movieInputChangeHandler} className={styles['movie-input-field']} id="movie-input-value" placeholder="Search Movies..." />
+                        <i class="fa fa-search"></i>
+                        <button className={styles['search-btn']} value="Submit">Search</button>
                     </form>
                 </div>
                 <MoviesList moviesList={this.state.moviesList} updateNextMovieIdHandler={this.updateNextMovieIdHandler}/>
