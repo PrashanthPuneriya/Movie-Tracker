@@ -25,13 +25,18 @@ header {
     text-align: center;
     flex-direction: column;
     display: none;
+    text-decoration: none;
 }
 
 .navbar-links.active {
     display: flex;
 }
 
-.navbar-links li a {
+.li {
+    text-decoration: none;
+}
+
+.navbar-links li{
     display: block;
     color: #000;
     text-decoration: none;
@@ -41,7 +46,7 @@ header {
     transition-duration: 200ms;
 }
 
-.navbar-links li a:hover {
+.navbar-links li:hover {
     background-color: #5ACEA5;
     border: 0.5px solid rgba(0, 0, 0, 0.37);
 }
@@ -84,7 +89,7 @@ header {
         width: 50vw;
     }
 
-    .navbar-links li a:hover {
+    .navbar-links li:hover {
         background-color: #29B9A8;
         border-style: solid none;
         border-width: 3px 0;

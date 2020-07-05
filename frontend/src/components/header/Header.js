@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styles from './Header.module.css';
 
 
@@ -14,7 +15,6 @@ class Nav extends React.Component {
             }
         );
         console.log(this.state.close)
-        console.log("jsdlf");
     }
 
     render() {
@@ -35,10 +35,21 @@ class Nav extends React.Component {
                             :
                             styles['navbar-links active']
                     }>
-                        <li><a href="#register">register</a></li>
-                        <li><a href="#login">login</a></li>
-                        <li><a href="#logout">logout</a></li>
-                        <li><a href="#profile">profile</a></li>
+                        <Link to="/" className={styles.li}>
+                            <li>home</li>
+                        </Link>
+                        <Link to="/register" className={styles.li}>
+                            <li>register</li>
+                        </Link>
+                        <Link to="/login" className={styles.li}>
+                            <li>login</li>
+                        </Link>
+                        <Link to="/logout" className={styles.li}>
+                            <li>logout</li>
+                        </Link>
+                        <Link to="/profile" className={styles.li}>
+                            <li>profile</li>
+                        </Link>
                     </ul>
                 </nav>
             </header>

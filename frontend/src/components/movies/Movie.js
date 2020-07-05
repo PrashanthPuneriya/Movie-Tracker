@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styles from './Movie.module.css';
 
 
@@ -13,9 +14,9 @@ const Movie = (props) => {
                         <img src={`https://image.tmdb.org/t/p/w300${props.movie.poster_path}`} alt="" />
                 }
             </div>
-            <div className={styles["movie-title"]} onClick={() => props.movieDetailViewHandler(props.movie.id)}>
-                <h4>{props.movie.title}</h4>
-            </div>
+            <Link to={`/movie/${props.movie.id}`} className={styles["movie-title"]} onClick={() => props.updateNextMovieIdHandler(props.movie.id)}>
+                <p>{props.movie.title}</p>
+            </Link>
         </div>
     );
 }

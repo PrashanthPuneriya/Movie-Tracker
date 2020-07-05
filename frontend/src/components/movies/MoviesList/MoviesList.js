@@ -7,12 +7,12 @@ const MoviesList = (props) => {
     return (
         <div className={Styles.MoviesList}>
             {
-                props.moviesList.map((movie, i) => {
+                props.moviesList.map((movie) => {
                     return (
                         <Movie
-                            key={i}
+                            key={movie.id}
                             movie={movie}
-                            movieDetailViewHandler={props.movieDetailViewHandler}
+                            updateNextMovieIdHandler = {props.updateNextMovieIdHandler}
                         />
                     )
                 })

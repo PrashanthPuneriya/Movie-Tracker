@@ -6,6 +6,11 @@
     margin: 2vh 5vh;
 }
 
+.movie-title {
+    color: #000000;
+    text-decoration: none;
+}
+
 .movie-title:hover {
     cursor: pointer;
     text-decoration: underline;
