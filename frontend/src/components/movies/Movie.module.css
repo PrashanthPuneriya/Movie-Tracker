@@ -3,7 +3,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 2vh 5vh;
+    margin: 2vh 5vw;
 }
 
 .movie-title {
@@ -14,4 +14,11 @@
 .movie-title:hover {
     cursor: pointer;
     text-decoration: underline;
+}
+
+@media only screen and (max-width: 500px) {
+    .movie-img img{
+        height: 24rem;
+        width: 16rem;
+    }
 }

@@ -6,7 +6,7 @@ import styles from './Movie.module.css';
 const Movie = (props) => {
     return (
         <div className={styles.Movie}>
-            <div id={styles["movie-img"]}>
+            <div className={styles["movie-img"]}>
                 {
                     props.movie.poster_path === null ?
                         null

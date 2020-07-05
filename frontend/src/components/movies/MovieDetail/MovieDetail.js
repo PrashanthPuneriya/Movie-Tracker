@@ -55,11 +55,13 @@ class MovieDetail extends React.Component {
     render() {
         return (
             this.state.movie === null ?
-                "Loading Movie Details..."
+                <div className={styles.MovieDetails}>
+                    Loading Movie Details...
+                </div>
                 :
                 <div className={styles.MovieDetails}>
 
-                    <div className={styles["movie-title"]}>
+                    <div className="movie-title">
                         <h1>{this.state.movie.title}</h1>
                     </div>
 
@@ -79,7 +81,7 @@ class MovieDetail extends React.Component {
                     </div>
 
                     <div className={styles["movie-recommender"]}>
-                        <h2>Recommended Movies</h2>
+                        <h1>Recommended Movies</h1>
                         <MoviesList moviesList={this.state.moviesList} updateNextMovieIdHandler={this.updateNextMovieIdHandler}/>
                     </div>
                 </div>

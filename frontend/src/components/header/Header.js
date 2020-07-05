@@ -14,7 +14,6 @@ class Header extends React.Component {
                 close: !this.state.close,
             }
         );
-        console.log(this.state.close)
     }
 
     render() {
@@ -31,7 +30,7 @@ class Header extends React.Component {
                         <span className={styles.bar}></span>
                         <span className={styles.bar}></span>
                     </div>
-                    <ul className={navstyles.join(" ")}>
+                    <ul className={navstyles.join(" ")} onClick={this.toggleNavBarBtn.bind(this)}>
                         <Link to="/" className={styles.li}>
                             <li>home</li>
                         </Link>

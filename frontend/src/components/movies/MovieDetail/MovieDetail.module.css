@@ -1,30 +1,46 @@
 .MovieDetails {
-    display: felx;
+    display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     align-content: center;
 }
 
 h1 {
-    margin: 5vh 2vh;
+    margin: 2vh 2vh;
     font-size: 2.5rem;
     font-family: 'EB Garamond', 'Poppins', sans-serif;
 }
 
 .movie-details {
-    margin: 5vh;
+    margin: 1vh 5vw;
     display: flex;
     justify-content: center;
     align-content: center;
+    flex-wrap: wrap;
     background-color: rgb(255, 255, 255);
 }
 
 .movie-img img {
-    height: 35rem;
+    height: 25rem;
 }
 
 .movie-overview {
     font-size: 1.15rem;
     margin: 2vh 2.5vw;
+}
+
+@media only screen and (min-width: 830px) {
+    
+    h1 {
+        margin: 5vh 2vh;
+    }
+
+    .movie-details {
+        flex-wrap: nowrap;
+    }
+    .movie-img img {
+        height: 35rem;
+    }
 }
