@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styles from './Header.module.css';
 
 
-class Nav extends React.Component {
+class Header extends React.Component {
     state = {
         close: true,
     }
@@ -19,7 +19,7 @@ class Nav extends React.Component {
 
     render() {
         const navstyles = [styles['navbar-links']];
-        if(this.state.close === true) {
+        if(this.state.close !== true) {
             navstyles.push(styles.active)
         }
         return (
@@ -54,4 +54,4 @@ class Nav extends React.Component {
     }
 }
 
-export default Nav;
+export default Header;
