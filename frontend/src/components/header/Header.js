@@ -18,7 +18,10 @@ class Nav extends React.Component {
     }
 
     render() {
-
+        const navstyles = [styles['navbar-links']];
+        if(this.state.close === true) {
+            navstyles.push(styles.active)
+        }
         return (
             <header>
                 <div className={styles.logo}>MovieTracker</div>
@@ -28,13 +31,7 @@ class Nav extends React.Component {
                         <span className={styles.bar}></span>
                         <span className={styles.bar}></span>
                     </div>
-                    <ul className={
-                        this.state.close === true
-                            ?
-                            styles['navbar-links']
-                            :
-                            styles['navbar-links active']
-                    }>
+                    <ul className={navstyles.join(" ")}>
                         <Link to="/" className={styles.li}>
                             <li>home</li>
                         </Link>
