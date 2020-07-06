@@ -30,6 +30,23 @@ class MyLists(MethodView):
         return response
 
     @login_required
+    def post(self):
+        # Create a new list
+        connection = db.get_db()
+        cursor = connection.cursor()
+
+        user_id = session['session_id']
+        data = request.get_json()
+        list_name = data['list_name']
+
+        cursor.execute(
+            "INSERT INTO lists (list_name, user_id) VALUES (%s, %s);",
+            (list_name, user_id)
+        )
+        connection.commit()
+        return ({"Success": f"{list_name} list created successfully"}, 201)
+
+    @login_required
     def delete(self):
         # Delete all lists of a particular user
         user_id = session['session_id']
@@ -60,23 +77,6 @@ class SingleList(MethodView):
         response = make_response(json.dumps(posts))
         response.mimetype = 'application/json'
         return response
-
-    @login_required
-    def post(self):
-        # Create a new list
-        connection = db.get_db()
-        cursor = connection.cursor()
-
-        user_id = session['session_id']
-        data = request.get_json()
-        list_name = data['list_name']
-
-        cursor.execute(
-            "INSERT INTO lists (list_name, user_id) VALUES (%s, %s);",
-            (list_name, user_id)
-        )
-        connection.commit()
-        return ({"Success": f"{list_name} list created successfully"}, 201)
 
     @login_required
     def patch(self, list_id):
