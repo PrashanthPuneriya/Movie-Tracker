@@ -37,7 +37,6 @@ class SearchArea extends React.Component {
                     <p>Search for the Movies to Track</p>
                     <form className={styles['search-form']} action="" onSubmit={this.movieInputSubmitHandler}>
                         <input type="text" onChange={this.movieInputChangeHandler} className={styles['movie-input-field']} id="movie-input-value" placeholder="Search Movies..." />
-                        <i class="fa fa-search"></i>
                         <button className={styles['search-btn']} value="Submit">Search</button>
                     </form>
                 </div>
