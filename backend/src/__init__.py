@@ -9,4 +9,9 @@ def create_app(config_file='settings.py'):
     from . import db
     db.init_app(app)
 
+    from .accounts.urls import accounts
+    from .lists.urls import lists
+    app.register_blueprint(accounts)
+    app.register_blueprint(lists)
+
     return app
