@@ -1,5 +1,5 @@
 from flask import Blueprint
-from .views import RegisterView, LoginView, logoutView, ProfileView
+from .views import RegisterView, LoginView, logoutView
 
 
 accounts = Blueprint(

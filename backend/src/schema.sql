@@ -22,7 +22,7 @@ CREATE TABLE movies(
     movie_id INTEGER NOT NULL,
     movie_title VARCHAR (255) NOT NULL,
     list_id INTEGER REFERENCES lists(id) ON DELETE CASCADE
-)
+);
 
 CREATE TABLE sessions(
     id serial PRIMARY KEY,
