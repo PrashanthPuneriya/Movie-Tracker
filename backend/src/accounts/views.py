@@ -32,21 +32,17 @@ def login_required(f):
 
 
 class RegisterView(MethodView):
-    def get(self):
-        return "Register by providing details"
-
     def post(self):
-        # have to sanitize the data and do all the other stuff
-
         connection = db.get_db()
         cursor = connection.cursor()
 
+        # Browser checks all the required fields are submitted or not. Hence, following checks may not be required.
         if 'email' not in request.json or request.json['email'] == "":
-            return ({'Error': 'Provide email address'})
+            return ({'message': 'Provide email address'})
         elif 'first_name' not in request.json or request.json['first_name'] == "":
-            return ({'Error': 'First Name is required to register'})
+            return ({'message': 'First Name is required to register'})
         elif 'password' not in request.json or request.json['password'] == "":
-            return ({'Error': 'Password is required to register'})
+            return ({'message': 'Password is required to register'})
         else:
             last_name = ""
             if 'last_name' in request.json:
@@ -59,7 +55,7 @@ class RegisterView(MethodView):
             user = cursor.fetchone()
 
             if user is not None:
-                return ({'Error': 'Email is already used by someone'})
+                return ({'message': 'Email is already used by someone'}, 409)
 
             else:
                 cursor.execute(
@@ -68,14 +64,10 @@ class RegisterView(MethodView):
                      generate_password_hash(request.json['password']))
                 )
                 connection.commit()
-
-                return ({"Success": "Registered successfully"})
+                return ({"message": "Registered successfully"}, 201)
 
 
 class LoginView(MethodView):
-    def get(self):
-        return "Login by providing details"
-
     def post(self):
         data = request.json
         email = data['email']
@@ -89,10 +81,8 @@ class LoginView(MethodView):
         cursor.execute("select * from users where email=%s;", (email, ))
         user = cursor.fetchone()
 
-        if user is None:
-            error = 'Email is incorrect or doesn\'t exists'
-        elif not check_password_hash(user[4], password):
-            error = 'Incorrect password'
+        if user is None or not check_password_hash(user[4], password):
+            error = "Please check login credentials"
 
         if error is None:
             session.clear()
@@ -102,10 +92,10 @@ class LoginView(MethodView):
                 (session['session_id'], user[0])
             )
             connection.commit()
-            return ({"Success": "Logged in successfully"})
+            return ({"message": "Logged in successfully"}, 200)
 
         else:
-            return ({"Error": error})
+            return ({"message": error}, 401)
 
 
 def logoutView():
