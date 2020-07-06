@@ -20,6 +20,7 @@ CREATE TABLE lists(
 CREATE TABLE movies(
     id serial PRIMARY KEY,
     movie_id INTEGER NOT NULL,
+    movie_title VARCHAR (255) NOT NULL,
     list_id INTEGER REFERENCES lists(id) ON DELETE CASCADE
 )
 
