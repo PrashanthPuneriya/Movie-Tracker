@@ -85,8 +85,9 @@ class LoginView(MethodView):
             error = "Please check login credentials"
 
         if error is None:
-            session.clear()
+            
             session['session_id'] = user[0]  # user_id
+            print(session['session_id'])
             cursor.execute(
                 "insert into sessions (session_id, user_id) values (%s, %s);",
                 (session['session_id'], user[0])

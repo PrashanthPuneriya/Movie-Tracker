@@ -24,6 +24,8 @@ class Login extends React.Component {
                     // Hence, to avoid updating state we use componentWillUnmount() as a workaround.
                     this.setState({ shouldRedirect: !this.state.shouldRedirect })
                 }
+                console.log(response)
+                console.log(response.headers);
                 return (response.json());
             })
             .then((data) => {

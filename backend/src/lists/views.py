@@ -11,10 +11,11 @@ json.loads() deserializes the data i.e. decodes the json data or string of json 
 
 
 class MyLists(MethodView):
-    @login_required
+    # @login_required
     def get(self):
         # Get all lists of a particular user
-        user_id = session['session_id']
+        # user_id = session['session_id']
+        user_id = 4
         connection = db.get_db()
         cursor = connection.cursor()
         cursor.execute(
@@ -29,13 +30,14 @@ class MyLists(MethodView):
         response.mimetype = 'application/json'
         return response
 
-    @login_required
+    # @login_required
     def post(self):
         # Create a new list
         connection = db.get_db()
         cursor = connection.cursor()
 
-        user_id = session['session_id']
+        # user_id = session['session_id']
+        user_id = 4
         data = request.get_json()
         list_name = data['list_name']
 
