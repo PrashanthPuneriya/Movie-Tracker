@@ -5,10 +5,11 @@ from .. import db
 
 
 def login_required(f):
+    # Middleware
     def wrapped_view(self, **kwargs):
         if 'session_id' not in session:
             # if the session_id is not present in clients browser cookie then redirect to login page
-            return redirect(url_for('accounts.login'))
+            return ({"Unauthorized": "You must be logged in"}, 401)
 
         else:
             # if the session_id is present then verify it with the database and then only return the f()
@@ -20,10 +21,12 @@ def login_required(f):
                 (session['session_id'], )
             )
             user = cursor.fetchone()
+
+            # if the already present session_id in clients browser matches with our db then the user is valid
             if user[0] == session['session_id']:
                 return f(self, **kwargs)
             else:
-                return redirect(url_for('accounts.login'))
+                return ({"Unauthorized": "You must be logged in"}, 401)
 
     return wrapped_view
 
@@ -117,8 +120,3 @@ def logoutView():
     )
     connection.commit()
     return ({"Success": "Logged out successfully"})
-
-
-class ProfileView():
-    def get(self):
-        pass
