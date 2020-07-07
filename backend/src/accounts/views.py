@@ -35,7 +35,7 @@ class RegisterView(MethodView):
     def post(self):
         connection = db.get_db()
         cursor = connection.cursor()
-        
+
         last_name = request.json.get('last_name', None)
 
         cursor.execute(
@@ -74,7 +74,7 @@ class LoginView(MethodView):
             error = "Please check login credentials"
 
         if error is None:
-            
+
             session['session_id'] = user[0]  # user_id
             print(session['session_id'])
             cursor.execute(
