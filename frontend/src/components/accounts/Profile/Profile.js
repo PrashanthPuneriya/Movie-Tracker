@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 class Profile extends React.Component {
 
@@ -11,7 +11,7 @@ class Profile extends React.Component {
         fetch(`http://localhost:5000/api/my-lists/`)
             .then((response) => response.json())
             .then((data) => {
-                this.setState({ lists: data })
+                this.setState({ lists: data }) // Update the lists state to display all the user lists
                 console.log(data)
             })
     }
@@ -31,7 +31,7 @@ class Profile extends React.Component {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                this.getMyListsHandler()
+                this.getMyListsHandler(); // Fetch the updated lists from the server again
             })
             .catch((error) => {
                 console.error(error);
