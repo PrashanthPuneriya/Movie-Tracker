@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 
 class Profile extends React.Component {
 
@@ -45,15 +46,6 @@ class Profile extends React.Component {
         return (
             <div>
                 <h1>Profile Page</h1>
-                <div className="Lists">
-                    {
-                        this.state.lists.map((list) => {
-                            return (
-                                <h4 key={list.id}>{list.id} --&gt; {list.list_name}</h4>
-                            )
-                        })
-                    }
-                </div>
                 <form className="AddListForm" onSubmit={this.submitHandler}>
                     <label>
                         Name of the list:
@@ -61,6 +53,17 @@ class Profile extends React.Component {
                     </label>
                     <button type="submit">Add</button>
                 </form>
+                <div className="Lists">
+                    {
+                        this.state.lists.map((list) => {
+                            return (
+                                <Link key={list.id} to={`/list/${list.id}`}>
+                                    <h4>{list.id} --&gt; {list.list_name}</h4>
+                                </Link>
+                            )
+                        })
+                    }
+                </div>
             </div>
         );
     }
