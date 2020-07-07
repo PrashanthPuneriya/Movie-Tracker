@@ -63,13 +63,13 @@ class MyLists(MethodView):
 
 
 class SingleList(MethodView):
-    @login_required
+    # @login_required
     def get(self, list_id):
         # Get a single list details
         connection = db.get_db()
         cursor = connection.cursor()
         cursor.execute(
-            "SELECT movie_id, movie_title FROM movies WHERE movie.list_id=%s;",
+            "SELECT movie_id, movie_title FROM movies WHERE movies.list_id=%s;",
             (list_id, )
         )
         rows = cursor.fetchall()
