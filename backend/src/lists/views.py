@@ -11,7 +11,6 @@ json.loads() deserializes the data i.e. decodes the json data or string of json 
 
 
 class MyLists(MethodView):
-    # @login_required
     def get(self):
         # Get all lists of a particular user
         # user_id = session['session_id']
@@ -30,7 +29,6 @@ class MyLists(MethodView):
         response.mimetype = 'application/json'
         return response
 
-    # @login_required
     def post(self):
         # Create a new list
         connection = db.get_db()
@@ -48,7 +46,6 @@ class MyLists(MethodView):
         connection.commit()
         return ({"Success": f"{list_name} list created successfully"}, 201)
 
-    @login_required
     def delete(self):
         # Delete all lists of a particular user
         user_id = session['session_id']
@@ -63,7 +60,6 @@ class MyLists(MethodView):
 
 
 class SingleList(MethodView):
-    # @login_required
     def get(self, list_id):
         # Get a single list details
         connection = db.get_db()
@@ -80,7 +76,6 @@ class SingleList(MethodView):
         response.mimetype = 'application/json'
         return response
 
-    @login_required
     def patch(self, list_id):
         # Update list name
         # PATCH -> Because we are updating only certain fields of the post but not the entire entity
@@ -96,7 +91,6 @@ class SingleList(MethodView):
         connection.commit()
         return ({"Success": "List name updated successfully"})
 
-    @login_required
     def delete(self, list_id):
         # Delete a single list
         connection = db.get_db()
@@ -106,11 +100,11 @@ class SingleList(MethodView):
             (list_id, )
         )
         connection.commit()
-        return ({"Success": "Deleted the list successfully"})
+        return ({"Success": "Deleted the list successfully"}, 200)
 
 
 class MovieInList(MethodView):
-    @login_required
+
     def post(self):
         # Add a movie under that particular list
         user = session['session_id']
@@ -130,7 +124,6 @@ class MovieInList(MethodView):
 
         return ({"Success": "Movie added to the list successfully", "movie_title": movie_title}, 201)
 
-    @login_required
     def delete(self):
         # Remove a movie from a particular list
         connection = db.get_db()
