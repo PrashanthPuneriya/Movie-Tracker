@@ -35,36 +35,25 @@ class RegisterView(MethodView):
     def post(self):
         connection = db.get_db()
         cursor = connection.cursor()
+        
+        last_name = request.json.get('last_name', None)
 
-        # Browser checks all the required fields are submitted or not. Hence, following checks may not be required.
-        if 'email' not in request.json or request.json['email'] == "":
-            return ({'message': 'Provide email address'})
-        elif 'first_name' not in request.json or request.json['first_name'] == "":
-            return ({'message': 'First Name is required to register'})
-        elif 'password' not in request.json or request.json['password'] == "":
-            return ({'message': 'Password is required to register'})
+        cursor.execute(
+            "select id from users where email = %s;",
+            (request.json['email'], )
+        )
+        user = cursor.fetchone()
+
+        if user is not None:
+            return ({'message': 'Email is already used by someone'}, 409)
         else:
-            last_name = ""
-            if 'last_name' in request.json:
-                last_name = request.json['last_name']
-
             cursor.execute(
-                "select id from users where email = %s;",
-                (request.json['email'], )
+                "insert into users (first_name, last_name, email, password) values (%s, %s, %s, %s);",
+                (request.json['first_name'], last_name, request.json['email'],
+                    generate_password_hash(request.json['password']))
             )
-            user = cursor.fetchone()
-
-            if user is not None:
-                return ({'message': 'Email is already used by someone'}, 409)
-
-            else:
-                cursor.execute(
-                    "insert into users (first_name, last_name, email, password) values (%s, %s, %s, %s);",
-                    (request.json['first_name'], last_name, request.json['email'],
-                     generate_password_hash(request.json['password']))
-                )
-                connection.commit()
-                return ({"message": "Registered successfully"}, 201)
+            connection.commit()
+            return ({"message": "Registered successfully"}, 201)
 
 
 class LoginView(MethodView):
