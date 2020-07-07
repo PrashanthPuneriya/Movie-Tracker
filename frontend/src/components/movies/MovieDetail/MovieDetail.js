@@ -10,6 +10,7 @@ class MovieDetail extends React.Component {
         movie: null,
         nextMovieID: null,
         moviesList: [],
+        lists: [],
     };
 
     apiKey = process.env.REACT_APP_API_KEY;
@@ -19,7 +20,6 @@ class MovieDetail extends React.Component {
             .then((response) => response.json())
             .then((data) => {
                 this.setState({ movie: data })
-                console.log(data)
             })
             .catch((error) => {
                 console.log('Error: ', error);
@@ -30,9 +30,6 @@ class MovieDetail extends React.Component {
         fetch(`https://api.themoviedb.org/3/movie/${currentMovieID}/recommendations?api_key=${this.apiKey}`)
             .then((response) => response.json())
             .then((data) => {
-                // 'data' is an object.
-                // 'results' is an array of objects which consists each movie details
-                console.log('Data: ', data);
                 this.setState({ moviesList: [...data.results] });
             })
             .catch((error) => {
@@ -40,10 +37,41 @@ class MovieDetail extends React.Component {
             });
     }
 
+    getMyListsHandler = () => {
+        fetch(`http://localhost:5000/api/my-lists/`)
+            .then((response) => response.json())
+            .then((data) => {
+                this.setState({ lists: data }) // Update the lists state to display all the user lists
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    addToMyListHanlder = (list_id) => {
+        let object = { 'movie_id': this.state.movie.id, 'movie_title': this.state.movie.title }
+        console.log(object);
+        fetch(`http://localhost:5000/api/my-lists/${list_id}/movie/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(object),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
     componentDidMount() {
         const currentMovieID = this.props.match.params.id;
         this.getMovieDetailsHandler(currentMovieID)
         this.getRecommendedMoviesHandler(currentMovieID)
+        this.getMyListsHandler()
     }
 
     updateNextMovieIdHandler = (nextMovieID) => {
@@ -79,10 +107,21 @@ class MovieDetail extends React.Component {
                             <p>{this.state.movie.overview}</p>
                         </div>
                     </div>
-
+                    {/* My Lists */}
+                    <div className="Lists">
+                        <h1>Add this movie to your List</h1>
+                        {
+                            this.state.lists.map((list) => {
+                                return (
+                                    <button key={list.id} onClick={() => this.addToMyListHanlder(list.id)}>{list.list_name}</button>
+                                );
+                            })
+                        }
+                    </div>
+                    {/* Recommended Movies */}
                     <div className={styles["movie-recommender"]}>
                         <h1>Recommended Movies</h1>
-                        <MoviesList moviesList={this.state.moviesList} updateNextMovieIdHandler={this.updateNextMovieIdHandler}/>
+                        <MoviesList moviesList={this.state.moviesList} updateNextMovieIdHandler={this.updateNextMovieIdHandler} />
                     </div>
                 </div>
         );

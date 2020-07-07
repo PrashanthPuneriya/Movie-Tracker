@@ -12,7 +12,7 @@ class Profile extends React.Component {
             .then((response) => response.json())
             .then((data) => {
                 this.setState({ lists: data }) // Update the lists state to display all the user lists
-                console.log(data)
+                // console.log(data)
             })
     }
 
@@ -23,7 +23,8 @@ class Profile extends React.Component {
         let object = {};
         formData.forEach((value, key) => { object[key] = value });
         fetch(`http://localhost:5000/api/my-lists/`, {
-            method: 'POST', headers: {
+            method: 'POST', 
+            headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(object),
@@ -58,7 +59,7 @@ class Profile extends React.Component {
                         this.state.lists.map((list) => {
                             return (
                                 <Link key={list.id} to={`/list/${list.id}`}>
-                                    <h4>{list.id} --&gt; {list.list_name}</h4>
+                                    <h4>{list.list_name}</h4>
                                 </Link>
                             )
                         })

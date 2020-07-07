@@ -105,33 +105,37 @@ class SingleList(MethodView):
 
 class MovieInList(MethodView):
 
-    def post(self):
+    def post(self, list_id):
         # Add a movie under that particular list
-        user = session['session_id']
+        user = 4
         connection = db.get_db()
         cursor = connection.cursor()
 
         data = request.get_json()
         movie_id = data['movie_id']
         movie_title = data['movie_title']
-        list_id = data['list_id']
 
+        # check if movie is already present or not and decide whether to insert the movie into the list
         cursor.execute(
-            "INSERT INTO movies (movie_id, movie_title, list_id) VALUES (%s, %s, %s);",
-            (movie_id, movie_title, list_id)
+            "SELECT EXISTS (SELECT movie_id FROM movies WHERE list_id=%s AND movie_id=%s);", (list_id, movie_id, )
         )
-        connection.commit()
+        rows = cursor.fetchone()
+        if not rows[0]:
+            cursor.execute(
+                "INSERT INTO movies (movie_id, movie_title, list_id) VALUES (%s, %s, %s);",
+                (movie_id, movie_title, list_id)
+            )
+            connection.commit()
 
         return ({"Success": "Movie added to the list successfully", "movie_title": movie_title}, 201)
 
-    def delete(self):
+    def delete(self, list_id):
         # Remove a movie from a particular list
         connection = db.get_db()
         cursor = connection.cursor()
 
         data = request.get_json()
         movie_id = data['movie_id']
-        list_id = data['list_id']
 
         cursor.execute(
             "DELETE FROM movies WHERE movies.movie_id=%s AND movies.list_id=%s;",
@@ -139,4 +143,4 @@ class MovieInList(MethodView):
         )
         connection.commit()
 
-        return ({"Success": "Removed movie from the list successfully"})
+        return ({"Success": "Removed movie from the list successfully"}, 200)

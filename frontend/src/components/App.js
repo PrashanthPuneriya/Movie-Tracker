@@ -11,7 +11,7 @@ import Login from './accounts/Login/Login';
 import Profile from './accounts/Profile/Profile';
 
 import styles from './App.module.css';
-import List from './accounts/Profile/List';
+import DetailList from './List/DetailList';
 
 
 class App extends React.Component {
@@ -28,7 +28,7 @@ class App extends React.Component {
             <Route path="/register" component={Registration} exact />
             <Route path="/login" component={Login} exact />
             <Route path="/profile" component={Profile} exact />
-            <Route path="/list/:id" component={List} exact />
+            <Route path="/list/:id" component={DetailList} exact />
           </Switch>
         </div>
       </BrowserRouter>

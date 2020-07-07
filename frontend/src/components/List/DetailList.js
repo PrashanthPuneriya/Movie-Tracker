@@ -1,6 +1,6 @@
 import React from 'react';
 
-class List extends React.Component {
+class DetailList extends React.Component {
 
     state = {
         currentListID: null,
@@ -12,7 +12,6 @@ class List extends React.Component {
             .then((response) => response.json())
             .then((data) => {
                 this.setState({ movies: data })
-                console.log(data)
             })
             .catch((error) => {
                 console.log('Error: ', error);
@@ -23,9 +22,7 @@ class List extends React.Component {
         event.preventDefault();
         const currentListID = this.state.currentListID;
         fetch(`http://localhost:5000/api/my-lists/${currentListID}`, {
-            method: 'DELETE', headers: {
-                'Content-Type': 'application/json'
-            },
+            method: 'DELETE',
         })
             .then((response) => {
                 console.log(response);
@@ -49,9 +46,18 @@ class List extends React.Component {
         return (
             <div>
                 <button onClick={this.deleteListHandler}>Delete this list</button>
+                <div className="ListOfMovies">
+                    {
+                        this.state.movies.map((movie) => {
+                            return (
+                                <h4 key={movie.movie_id}>{movie.movie_title}</h4>
+                            )
+                        })
+                    }
+                </div>
             </div>
         );
     }
 }
 
-export default List;
+export default DetailList;
