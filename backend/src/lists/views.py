@@ -1,8 +1,9 @@
 import json
-from flask import make_response, request, session
+import jwt
+from flask import make_response, request, current_app
 from flask.views import MethodView
 from .. import db
-from ..accounts.views import login_required
+from ..accounts.views import token_required
 
 """
 json.dumps() serializes the data i.e. encodes the python data
@@ -10,11 +11,28 @@ json.loads() deserializes the data i.e. decodes the json data or string of json 
 """
 
 
+def find_userID_by_decoding_jwt():
+    # No need to check whether payload is correct or not. Since, it has been taken care by @token_required
+    auth_header = request.headers.get('Authorization')
+    auth_token = auth_header.split(" ")[1]
+    payload = jwt.decode(
+        auth_token, current_app.config['SECRET_KEY'])
+    email = payload['email']
+    connection = db.get_db()
+    cursor = connection.cursor()
+    cursor.execute(
+        "SELECT users.id from users WHERE users.email=%s",
+        (email, )
+    )
+    user_id = cursor.fetchone()
+    return user_id[0]
+
+
 class MyLists(MethodView):
+    @token_required
     def get(self):
         # Get all lists of a particular user
-        # user_id = session['session_id']
-        user_id = 4
+        user_id = find_userID_by_decoding_jwt()
         connection = db.get_db()
         cursor = connection.cursor()
         cursor.execute(
@@ -31,14 +49,11 @@ class MyLists(MethodView):
 
     def post(self):
         # Create a new list
+        user_id = find_userID_by_decoding_jwt()
         connection = db.get_db()
         cursor = connection.cursor()
-
-        # user_id = session['session_id']
-        user_id = 4
         data = request.get_json()
         list_name = data['list_name']
-
         cursor.execute(
             "INSERT INTO lists (list_name, user_id) VALUES (%s, %s);",
             (list_name, user_id)
@@ -48,7 +63,7 @@ class MyLists(MethodView):
 
     def delete(self):
         # Delete all lists of a particular user
-        user_id = session['session_id']
+        user_id = find_userID_by_decoding_jwt()
         connection = db.get_db()
         cursor = connection.cursor()
         cursor.execute(
@@ -107,17 +122,16 @@ class MovieInList(MethodView):
 
     def post(self, list_id):
         # Add a movie under that particular list
-        user = 4
         connection = db.get_db()
         cursor = connection.cursor()
-
         data = request.get_json()
         movie_id = data['movie_id']
         movie_title = data['movie_title']
 
         # check if movie is already present or not and decide whether to insert the movie into the list
         cursor.execute(
-            "SELECT EXISTS (SELECT movie_id FROM movies WHERE list_id=%s AND movie_id=%s);", (list_id, movie_id, )
+            "SELECT EXISTS (SELECT movie_id FROM movies WHERE list_id=%s AND movie_id=%s);", (
+                list_id, movie_id, )
         )
         rows = cursor.fetchone()
         if not rows[0]:
@@ -133,7 +147,6 @@ class MovieInList(MethodView):
         # Remove a movie from a particular list
         connection = db.get_db()
         cursor = connection.cursor()
-
         data = request.get_json()
         movie_id = data['movie_id']
 

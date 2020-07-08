@@ -1,34 +1,28 @@
-from flask import make_response, request, redirect, url_for, session
+import jwt
+from flask import make_response, request, redirect, url_for, session, current_app
 from flask.views import MethodView
 from werkzeug.security import generate_password_hash, check_password_hash
 from .. import db
 
 
-def login_required(f):
-    # Middleware
-    def wrapped_view(self, **kwargs):
-        if 'session_id' not in session:
-            # if the session_id is not present in clients browser cookie then redirect to login page
-            return ({"Unauthorized": "You must be logged in"}, 401)
-
-        else:
-            # if the session_id is present then verify it with the database and then only return the f()
-            connection = db.get_db()
-            cursor = connection.cursor()
-
-            cursor.execute(
-                "select session_id from sessions where session_id=%s;",
-                (session['session_id'], )
-            )
-            user = cursor.fetchone()
-
-            # if the already present session_id in clients browser matches with our db then the user is valid
-            if user[0] == session['session_id']:
-                return f(self, **kwargs)
-            else:
+def token_required(func):
+    def wrapper_function(*args, **kwargs):
+        auth_header = request.headers.get('Authorization')
+        if auth_header:
+            # Token is present
+            auth_token = auth_header.split(" ")[1]
+            # Verify token
+            try:
+                payload = jwt.decode(
+                    auth_token, current_app.config['SECRET_KEY'])
+            except:
+                # token is invalid
                 return ({"Unauthorized": "You must be logged in"}, 401)
-
-    return wrapped_view
+            return func(*args, **kwargs)
+        else:
+            # Token is not present
+            return ({"Unauthorized": "You must be logged in"}, 401)
+    return wrapper_function
 
 
 class RegisterView(MethodView):
@@ -36,11 +30,15 @@ class RegisterView(MethodView):
         connection = db.get_db()
         cursor = connection.cursor()
 
-        last_name = request.json.get('last_name', None)
+        data = request.get_json()
+        first_name = data['first_name']
+        last_name = data['last_name']
+        email = data['email']
+        password = data['password']
 
         cursor.execute(
             "select id from users where email = %s;",
-            (request.json['email'], )
+            (email, )
         )
         user = cursor.fetchone()
 
@@ -49,8 +47,7 @@ class RegisterView(MethodView):
         else:
             cursor.execute(
                 "insert into users (first_name, last_name, email, password) values (%s, %s, %s, %s);",
-                (request.json['first_name'], last_name, request.json['email'],
-                    generate_password_hash(request.json['password']))
+                (first_name, last_name, email, generate_password_hash(password))
             )
             connection.commit()
             return ({"message": "Registered successfully"}, 201)
@@ -58,45 +55,30 @@ class RegisterView(MethodView):
 
 class LoginView(MethodView):
     def post(self):
-        data = request.json
+        data = request.get_json()
         email = data['email']
         password = data['password']
-        # have to sanitize the data and validate them
         error = None
 
         connection = db.get_db()
         cursor = connection.cursor()
-
         cursor.execute("select * from users where email=%s;", (email, ))
-        user = cursor.fetchone()
+        user = cursor.fetchone()  # user_id --> user[0]
 
         if user is None or not check_password_hash(user[4], password):
             error = "Please check login credentials"
 
         if error is None:
-
-            session['session_id'] = user[0]  # user_id
-            print(session['session_id'])
-            cursor.execute(
-                "insert into sessions (session_id, user_id) values (%s, %s);",
-                (session['session_id'], user[0])
-            )
-            connection.commit()
-            return ({"message": "Logged in successfully"}, 200)
-
+            encoded_token = jwt.encode(
+                {'email': email}, current_app.config['SECRET_KEY'], algorithm='HS256')
+            # cursor.execute(
+            #     "insert into tokens (token, user_id) values (%s, %s);",
+            #     (encoded_token.decode('UTF-8'), user[0])
+            # )
+            # encoded_token.decode('utf-8') is used to make the token readable
+            # connection.commit()
+            response = make_response(
+                {"message": "Logged in successfully", "token": "token = " + encoded_token.decode('UTF-8')}, 200)
+            return response
         else:
             return ({"message": error}, 401)
-
-
-def logoutView():
-    session_id = session['session_id']
-    session.clear()
-    # delete from db
-    connection = db.get_db()
-    cursor = connection.cursor()
-    cursor.execute(
-        "delete from sessions where session_id=%s;",
-        (session_id, )
-    )
-    connection.commit()
-    return ({"Success": "Logged out successfully"})
