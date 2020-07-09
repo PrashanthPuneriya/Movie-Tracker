@@ -7,8 +7,13 @@ import styles from './Profile.module.css';
 class Profile extends React.Component {
     static contextType = GlobalStateContext;
 
+    state = {
+        isLoading: false,
+    }
+
     createListHandler = (event) => {
         event.preventDefault();
+        this.setState({ isLoading: true })
         let context = this.context;
         let token = context.getTokenFromCookieHandler();
         let formData = new FormData(event.target);
@@ -26,9 +31,11 @@ class Profile extends React.Component {
             .then((response) => response.json())
             .then((data) => {
                 context.getMyListsHandler(); // Fetch the updated lists from the server again
+                this.setState({ isLoading: false })
             })
             .catch((error) => {
                 console.error(error);
+                this.setState({ isLoading: false })
             })
     }
 
@@ -39,8 +46,12 @@ class Profile extends React.Component {
 
     render() {
         const context = this.context;
+        let isLoading = this.state.isLoading;
         if (!context.state.isLoggedIn) {
             return <Redirect to={{ pathname: "/login", message: "You are not logged in!" }} />
+        }
+        else if (isLoading) {
+            return <div className="loader">Loading...</div>
         }
         else return (
             <div>

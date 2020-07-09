@@ -7,12 +7,14 @@ class DetailList extends React.Component {
     static contextType = GlobalStateContext;
     state = {
         shouldRedirectAfterSuccessfulDelete: false,
+        isLoading: false,
         currentListID: null,
         movies: []
     }
 
     getListDetailsHandler = (currentListID) => {
         let context = this.context;
+        this.setState({ isLoading: true })
         let token = context.getTokenFromCookieHandler();
         fetch(`http://localhost:5000/api/my-lists/${currentListID}/`, {
             method: 'GET',
@@ -23,14 +25,17 @@ class DetailList extends React.Component {
             .then((response) => response.json())
             .then((data) => {
                 this.setState({ movies: data })
+                this.setState({ isLoading: false })
             })
             .catch((error) => {
                 console.log('Error: ', error);
+                this.setState({ isLoading: false })
             });
     }
 
     deleteListHandler = (event) => {
         event.preventDefault();
+        this.setState({ isLoading: true })
         let context = this.context;
         let token = context.getTokenFromCookieHandler();
         const currentListID = this.state.currentListID;
@@ -43,9 +48,11 @@ class DetailList extends React.Component {
             .then((response) => response.json())
             .then(() => {
                 this.setState({shouldRedirectAfterSuccessfulDelete: !this.state.shouldRedirectAfterSuccessfulDelete})
+                this.setState({ isLoading: false })
             })
             .catch((error) => {
                 console.log('Error:', error);
+                this.setState({ isLoading: false })
             });
     }
 
@@ -57,9 +64,13 @@ class DetailList extends React.Component {
 
     render() {
         const context = this.context;
+        let isLoading = this.state.isLoading;
         const shouldRedirectAfterSuccessfulDelete = this.state.shouldRedirectAfterSuccessfulDelete;
         if (!context.state.isLoggedIn) {
             return <Redirect to={{ pathname: "/login", message: "You are not logged in!" }} />
+        }
+        else if (isLoading) {
+            return <div className="loader">Loading...</div>
         }
         else if (shouldRedirectAfterSuccessfulDelete) {
             return <Redirect to="/profile" />

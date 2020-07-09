@@ -10,15 +10,17 @@ class MovieDetail extends React.Component {
         movie: null,
         nextMovieID: null,
         recommendedMoviesList: [],
+        isLoading: false,
     };
 
     apiKey = process.env.REACT_APP_API_KEY;
 
     getMovieDetailsHandler = (currentMovieID) => {
+        this.setState({ isLoading: true })
         fetch(`https://api.themoviedb.org/3/movie/${currentMovieID}?api_key=${this.apiKey}`)
             .then((response) => response.json())
             .then((data) => {
-                this.setState({ movie: data })
+                this.setState({ movie: data, isLoading: false })
             })
             .catch((error) => {
                 console.error('Error: ', error);
@@ -70,57 +72,63 @@ class MovieDetail extends React.Component {
 
     render() {
         const context = this.context;
+        const isLoading = this.state.isLoading;
+        let movie = this.state.movie
         return (
-            this.state.movie === null ?
-                <div className={styles.MovieDetails}>
-                    Loading Movie Details...
+            isLoading ?
+                <div className="loader">
+                    Loading...
                 </div>
                 :
-                <div className={styles.MovieDetails}>
+                movie != null
+                    ?
+                    <div className={styles.MovieDetails}>
 
-                    <div className="movie-title">
-                        <h1>{this.state.movie.title}</h1>
-                    </div>
+                        <div className="movie-title">
+                            <h1>{movie.title}</h1>
+                        </div>
 
-                    <div className={styles["movie-details"]}>
-                        <div className={styles["movie-img"]}>
-                            {
-                                this.state.movie.poster_path === null ?
-                                    null
-                                    :
-                                    <img src={`https://image.tmdb.org/t/p/w500${this.state.movie.poster_path}`} alt="" />
-                            }
-                        </div>
-                        <div className={styles["movie-overview"]}>
-                            <h2>Overview</h2>
-                            <p>{this.state.movie.overview}</p>
-                        </div>
-                    </div>
-                    {
-                        // User's Lists
-                        context.state.isLoggedIn
-                            ?
-                            <>
-                                <h1>Add this movie to your List</h1>
-                                <div className={styles.UserLists}> 
+                        <div className={styles["movie-details"]}>
+                            <div className={styles["movie-img"]}>
                                 {
-                                    context.state.userLists.map((list) => {
-                                        return (
-                                            <button className={styles.AddMovieToListButton} key={list.id} onClick={() => this.addMovieToMyListHandler(list.id)}>{list.list_name}</button>
-                                        );
-                                    })
+                                    movie.poster_path === null ?
+                                        null
+                                        :
+                                        <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt="" />
                                 }
-                                </div>
-                            </>
-                            :
-                            null
-                    }
-                    {/* Recommended Movies */}
-                    <div className={styles["movie-recommender"]}>
-                        <h1>Recommended Movies</h1>
-                        <MoviesList moviesList={this.state.recommendedMoviesList} updateNextMovieIdHandler={this.updateNextMovieIdHandler} />
+                            </div>
+                            <div className={styles["movie-overview"]}>
+                                <h2>Overview</h2>
+                                <p>{movie.overview}</p>
+                            </div>
+                        </div>
+                        {
+                            // User's Lists
+                            context.state.isLoggedIn
+                                ?
+                                <>
+                                    <h1>Add this movie to your List</h1>
+                                    <div className={styles.UserLists}>
+                                        {
+                                            context.state.userLists.map((list) => {
+                                                return (
+                                                    <button className={styles.AddMovieToListButton} key={list.id} onClick={() => this.addMovieToMyListHandler(list.id)}>{list.list_name}</button>
+                                                );
+                                            })
+                                        }
+                                    </div>
+                                </>
+                                :
+                                null
+                        }
+                        {/* Recommended Movies */}
+                        <div className={styles["movie-recommender"]}>
+                            <h1>Recommended Movies</h1>
+                            <MoviesList moviesList={this.state.recommendedMoviesList} updateNextMovieIdHandler={this.updateNextMovieIdHandler} />
+                        </div>
                     </div>
-                </div>
+                    :
+                    null
         );
     }
 }

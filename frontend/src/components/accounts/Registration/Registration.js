@@ -9,10 +9,12 @@ class Registration extends React.Component {
     static contextType = GlobalStateContext;
     state = {
         message: null,
+        isLoading: false,
     }
 
     submitUserCredentialsHandler = (event) => {
         event.preventDefault();
+        this.setState({ isLoading: true })
         const context = this.context;
         let formData = new FormData(event.target);
         let object = {};
@@ -29,22 +31,29 @@ class Registration extends React.Component {
                 const data = object.body
                 if (object.status === 201) {
                     document.cookie = data['token']
-                    context.changeLoggedInStatusHandler();
                 }
                 else {
                     this.setState({ message: data['message'] })
                 }
+                this.setState({ isLoading: false })
             })
             .catch((error) => {
                 console.error(error);
+                this.setState({ message: "Something went wrong with our server. Please try again later at some other time"})
+                this.setState({ isLoading: false })
             })
     }
 
     render() {
         let message = this.state.message;
+        let isLoading = this.state.isLoading;
+
         const context = this.context;
         if (context.state.isLoggedIn) {
             return <Redirect to="/profile" />
+        }
+        else if (isLoading) {
+            return <div className="loader">Loading...</div>
         }
         else return (
             <div className={styles.Registration}>
