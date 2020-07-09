@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import GlobalStateContext from '../../GlobalStateContext.js';
+import styles from './Profile.module.css';
 
 
 class Profile extends React.Component {
@@ -43,24 +44,26 @@ class Profile extends React.Component {
         }
         else return (
             <div>
-                <h1>Profile Page</h1>
-                <form className="AddListForm" onSubmit={this.createListHandler}>
-                    <label>
-                        Name of the list:
+                <div className={styles.CreateListArea}>
+                    <h2>Create a list</h2>
+                    <form className={styles.AddListForm} onSubmit={this.createListHandler}>
                         <input type="text" name="list_name" placeholder="Name of the list..." required />
-                    </label>
-                    <button type="submit">Add</button>
-                </form>
-                <div className="Lists">
-                    {
-                        context.state.userLists.map((list) => {
-                            return (
-                                <Link key={list.id} to={`/list/${list.id}`}>
-                                    <h4>{list.list_name}</h4>
-                                </Link>
-                            )
-                        })
-                    }
+                        <button type="submit">Add</button>
+                    </form>
+                </div>
+                <div className={styles.DisplayListArea}>
+                    <h2>Your lists</h2>
+                    <div className={styles.Lists}>
+                        {
+                            context.state.userLists.map((list) => {
+                                return (
+                                    <Link style={{ textDecoration: 'none' }} key={list.id} to={`/list/${list.id}`}>
+                                        <p className={styles.ListName}>{list.list_name}</p>
+                                    </Link>
+                                )
+                            })
+                        }
+                    </div>
                 </div>
             </div>
         );

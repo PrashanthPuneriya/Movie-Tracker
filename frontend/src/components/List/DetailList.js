@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import GlobalStateContext from '../GlobalStateContext.js';
-
+import styles from './DetailList.module.css';
 
 class DetailList extends React.Component {
     static contextType = GlobalStateContext;
@@ -66,8 +66,8 @@ class DetailList extends React.Component {
         }
         else return (
             <div>
-                <button to="/profile" onClick={this.deleteListHandler}>Delete this list</button>
-                <div className="ListOfMovies">
+                <button className={styles.DeleteButton} onClick={this.deleteListHandler}>Delete this list</button>
+                <div className={styles.MoviesList}>
                     {
                         this.state.movies.map((movie) => {
                             return (

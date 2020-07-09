@@ -2,6 +2,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import GlobalStateContext from '../../GlobalStateContext.js';
+import styles from './Login.module.css';
 
 
 class Login extends React.Component {
@@ -47,25 +48,20 @@ class Login extends React.Component {
             return <Redirect to="/profile" />
         }
         else return (
-            <div>
+            <div className={styles.Login}>
+                <h1 className={styles.title}>Login</h1>
                 {
                     message !== null ?
-                        <h3>{message}</h3>
+                        <h4 className={styles.message}>{message}</h4>
                         :
                         null
                 }
-                <h3>{this.props.location.message}</h3> {/* This is shown when user is redirected from protected routes */}
-                <h1>Login Page</h1>
-                <form className="LoginForm" onSubmit={this.submitUserCredentialsHandler}>
-                    <label>
-                        Email:
-                        <input type="email" name="email" placeholder="Email" required />
-                    </label>
-                    <label>
-                        Password:
-                        <input type="password" name="password" placeholder="Password" required />
-                    </label>
-                    <button type="submit">Submit</button>
+                {/* This is shown when user is redirected from protected routes */}
+                <h4 className={styles.message}>{this.props.location.message}</h4>
+                <form className={styles.LoginForm} onSubmit={this.submitUserCredentialsHandler}>
+                    <input type="email" name="email" placeholder="Email" required />
+                    <input type="password" name="password" placeholder="Password" required />
+                    <button type="submit">Login</button>
                 </form>
             </div>
         );

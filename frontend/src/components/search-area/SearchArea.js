@@ -27,20 +27,20 @@ class SearchArea extends React.Component {
             });
     }
 
-    updateNextMovieIdHandler = (nextMovieID) => {}
+    updateNextMovieIdHandler = (nextMovieID) => { }
 
     render() {
         return (
-            <div>
+            <>
                 <div className={styles.SearchArea}>
-                    <p>Search for the Movies to Track</p>
-                    <form className={styles['search-form']} action="" onSubmit={this.movieInputSubmitHandler}>
-                        <input type="text" onChange={this.movieInputChangeHandler} className={styles['movie-input-field']} id="movie-input-value" placeholder="Search Movies..." />
-                        <button className={styles['search-btn']} value="Submit">Search</button>
+                    <h3>Search for the Movies to Track</h3>
+                    <form className={styles.SearchForm} action="" onSubmit={this.movieInputSubmitHandler}>
+                        <input type="text" placeholder="Search Movies..." onChange={this.movieInputChangeHandler} />
+                        <button value="Submit">Search</button>
                     </form>
                 </div>
-                <MoviesList moviesList={this.state.moviesList} updateNextMovieIdHandler={this.updateNextMovieIdHandler}/>
-            </div>
+                <MoviesList moviesList={this.state.moviesList} updateNextMovieIdHandler={this.updateNextMovieIdHandler} />
+            </>
         );
     }
 }

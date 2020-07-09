@@ -2,6 +2,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import GlobalStateContext from '../../GlobalStateContext.js';
+import styles from './Registration.module.css';
 
 
 class Registration extends React.Component {
@@ -46,32 +47,20 @@ class Registration extends React.Component {
             return <Redirect to="/profile" />
         }
         else return (
-            <div>
+            <div className={styles.Registration}>
+                <h1 className={styles.title}>Registration</h1>
                 {
                     message !== null ?
-                        <h3>{message}</h3>
+                        <h4 className={styles.message}>{message}</h4>
                         :
                         null
                 }
-                <h1>Registration Page</h1>
-                <form className="RegistrationForm" onSubmit={this.submitUserCredentialsHandler}>
-                    <label>
-                        First Name:
-                        <input type="text" name="first_name" placeholder="First Name" required />
-                    </label>
-                    <label>
-                        Last Name:
-                        <input type="text" name="last_name" placeholder="Last Name" />
-                    </label>
-                    <label>
-                        Email:
-                        <input type="email" name="email" placeholder="Email" required />
-                    </label>
-                    <label>
-                        Password:
-                        <input type="password" name="password" placeholder="Password" required />
-                    </label>
-                    <button type="submit">Submit</button>
+                <form className={styles.RegistrationForm} onSubmit={this.submitUserCredentialsHandler}>
+                    <input type="text" name="first_name" placeholder="First Name" required />
+                    <input type="text" name="last_name" placeholder="Last Name" />
+                    <input type="email" name="email" placeholder="Email" required />
+                    <input type="password" name="password" placeholder="Password" required />
+                    <button type="submit">Register</button>
                 </form>
             </div>
         );

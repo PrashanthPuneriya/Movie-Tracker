@@ -1,7 +1,8 @@
 import React from 'react';
-import styles from './MovieDetail.module.css';
 import MoviesList from '../MoviesList/MoviesList.js';
 import GlobalStateContext from '../../GlobalStateContext.js';
+import styles from './MovieDetail.module.css';
+
 
 class MovieDetail extends React.Component {
     static contextType = GlobalStateContext;
@@ -99,16 +100,18 @@ class MovieDetail extends React.Component {
                         // User's Lists
                         context.state.isLoggedIn
                             ?
-                            <div className="Lists">
+                            <>
                                 <h1>Add this movie to your List</h1>
+                                <div className={styles.UserLists}> 
                                 {
                                     context.state.userLists.map((list) => {
                                         return (
-                                            <button key={list.id} onClick={() => this.addMovieToMyListHandler(list.id)}>{list.list_name}</button>
+                                            <button className={styles.AddMovieToListButton} key={list.id} onClick={() => this.addMovieToMyListHandler(list.id)}>{list.list_name}</button>
                                         );
                                     })
                                 }
-                            </div>
+                                </div>
+                            </>
                             :
                             null
                     }

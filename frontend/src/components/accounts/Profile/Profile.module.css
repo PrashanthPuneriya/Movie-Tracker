@@ -1,17 +1,16 @@
-.SearchArea {
+.CreateListArea {
     width: 50vw;
     margin: 2rem auto;
-    border-radius: 1rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0.096);
 }
 
-.SearchForm {
+.AddListForm {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.SearchForm input {
+.AddListForm input {
     font-size: 1rem;
     margin: 1rem;
     width: 60%;
@@ -22,7 +21,7 @@
     outline: none;
 }
 
-.SearchForm button {
+.AddListForm button {
     background: #5ACEA5;
     font-size: 1rem;
     text-transform: capitalize;
@@ -35,15 +34,40 @@
     margin-bottom: 1rem;
 }
 
-.SearchForm button:hover {
+.AddListForm button:hover {
     background: #29B9A8;
 }
 
+.DisplayListArea {
+    width: 35vw;
+    margin: 2rem auto;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    border-radius: 1rem;
+}
+
+.Lists {
+    display: flex;
+    flex-direction: column;
+}
+
+.ListName {
+    font-size: 1.15rem;
+    color: black;
+}
+
+.ListName:hover {
+    background-color: rgb(221, 221, 221)
+}
+
 @media only screen and (max-width: 700px) {
-    .SearchForm input {
+    .AddListForm input {
         width: 100%;
     }
-    .SearchForm button {
+    .AddListForm button {
         width: 50%;
+    }
+
+    .DisplayListArea {
+        width: 70vw;
     }
 }
