@@ -14,6 +14,7 @@ import GlobalStateContext from './GlobalStateContext.js';
 class App extends React.Component {
   state = {
     isLoggedIn: false,
+    userLists: [],
   }
 
   changeLoggedInStatusHandler = () => {
@@ -38,6 +39,22 @@ class App extends React.Component {
     this.changeLoggedInStatusHandler();
   }
 
+  getMyListsHandler = () => {
+    let token = this.getTokenFromCookieHandler();
+    fetch(`http://localhost:5000/api/my-lists/`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        this.setState({ userLists: data }) // Update the lists state to display all the user lists
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+  }
+
   render() {
     return (
       <GlobalStateContext.Provider
@@ -46,6 +63,7 @@ class App extends React.Component {
           changeLoggedInStatusHandler: this.changeLoggedInStatusHandler,
           getTokenFromCookieHandler: this.getTokenFromCookieHandler,
           deleteTokenFromCookieHandler: this.deleteTokenFromCookieHandler,
+          getMyListsHandler: this.getMyListsHandler,
         }}
       >
         <BrowserRouter>

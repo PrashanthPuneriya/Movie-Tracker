@@ -5,27 +5,8 @@ import GlobalStateContext from '../../GlobalStateContext.js';
 
 class Profile extends React.Component {
     static contextType = GlobalStateContext;
-    state = {
-        lists: [],
-    }
-    getMyListsHandler = () => {
-        let context = this.context;
-        let token = context.getTokenFromCookieHandler();
-        fetch(`http://localhost:5000/api/my-lists/`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                this.setState({ lists: data }) // Update the lists state to display all the user lists
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-    }
 
-    addAListHandler = (event) => {
+    createListHandler = (event) => {
         event.preventDefault();
         let context = this.context;
         let token = context.getTokenFromCookieHandler();
@@ -43,7 +24,7 @@ class Profile extends React.Component {
         })
             .then((response) => response.json())
             .then((data) => {
-                this.getMyListsHandler(); // Fetch the updated lists from the server again
+                context.getMyListsHandler(); // Fetch the updated lists from the server again
             })
             .catch((error) => {
                 console.error(error);
@@ -51,7 +32,8 @@ class Profile extends React.Component {
     }
 
     componentDidMount() {
-        this.getMyListsHandler();
+        const context = this.context;
+        context.getMyListsHandler();
     }
 
     render() {
@@ -62,7 +44,7 @@ class Profile extends React.Component {
         else return (
             <div>
                 <h1>Profile Page</h1>
-                <form className="AddListForm" onSubmit={this.addAListHandler}>
+                <form className="AddListForm" onSubmit={this.createListHandler}>
                     <label>
                         Name of the list:
                         <input type="text" name="list_name" placeholder="Name of the list..." required />
@@ -71,7 +53,7 @@ class Profile extends React.Component {
                 </form>
                 <div className="Lists">
                     {
-                        this.state.lists.map((list) => {
+                        context.state.userLists.map((list) => {
                             return (
                                 <Link key={list.id} to={`/list/${list.id}`}>
                                     <h4>{list.list_name}</h4>

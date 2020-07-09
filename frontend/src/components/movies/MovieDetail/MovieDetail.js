@@ -8,8 +8,7 @@ class MovieDetail extends React.Component {
     state = {
         movie: null,
         nextMovieID: null,
-        moviesList: [],
-        lists: [],
+        recommendedMoviesList: [],
     };
 
     apiKey = process.env.REACT_APP_API_KEY;
@@ -29,28 +28,10 @@ class MovieDetail extends React.Component {
         fetch(`https://api.themoviedb.org/3/movie/${currentMovieID}/recommendations?api_key=${this.apiKey}`)
             .then((response) => response.json())
             .then((data) => {
-                this.setState({ moviesList: [...data.results] });
+                this.setState({ recommendedMoviesList: [...data.results] });
             })
             .catch((error) => {
                 console.error('Error: ', error);
-            });
-    }
-
-    getMyListsHandler = () => {
-        let context = this.context;
-        let token = context.getTokenFromCookieHandler();
-        fetch(`http://localhost:5000/api/my-lists/`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                this.setState({ lists: data }) // Update the lists state to display all the user lists
-            })
-            .catch((error) => {
-                console.error(error);
             });
     }
 
@@ -74,14 +55,15 @@ class MovieDetail extends React.Component {
 
     componentDidMount() {
         const currentMovieID = this.props.match.params.id;
-        this.getMovieDetailsHandler(currentMovieID)
-        this.getRecommendedMoviesHandler(currentMovieID)
-        this.getMyListsHandler()
+        let context = this.context;
+        this.getMovieDetailsHandler(currentMovieID);
+        this.getRecommendedMoviesHandler(currentMovieID);
+        context.getMyListsHandler();
     }
 
     updateNextMovieIdHandler = (nextMovieID) => {
-        this.getMovieDetailsHandler(nextMovieID)
-        this.getRecommendedMoviesHandler(nextMovieID)
+        this.getMovieDetailsHandler(nextMovieID);
+        this.getRecommendedMoviesHandler(nextMovieID);
         window.scrollTo(0, 0);
     }
 
@@ -120,7 +102,7 @@ class MovieDetail extends React.Component {
                             <div className="Lists">
                                 <h1>Add this movie to your List</h1>
                                 {
-                                    this.state.lists.map((list) => {
+                                    context.state.userLists.map((list) => {
                                         return (
                                             <button key={list.id} onClick={() => this.addMovieToMyListHandler(list.id)}>{list.list_name}</button>
                                         );
@@ -133,7 +115,7 @@ class MovieDetail extends React.Component {
                     {/* Recommended Movies */}
                     <div className={styles["movie-recommender"]}>
                         <h1>Recommended Movies</h1>
-                        <MoviesList moviesList={this.state.moviesList} updateNextMovieIdHandler={this.updateNextMovieIdHandler} />
+                        <MoviesList moviesList={this.state.recommendedMoviesList} updateNextMovieIdHandler={this.updateNextMovieIdHandler} />
                     </div>
                 </div>
         );
