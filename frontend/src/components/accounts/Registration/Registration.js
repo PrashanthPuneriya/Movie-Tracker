@@ -15,7 +15,6 @@ class Registration extends React.Component {
     submitUserCredentialsHandler = (event) => {
         event.preventDefault();
         this.setState({ isLoading: true })
-        const context = this.context;
         let formData = new FormData(event.target);
         let object = {};
         formData.forEach((value, key) => { object[key] = value });
