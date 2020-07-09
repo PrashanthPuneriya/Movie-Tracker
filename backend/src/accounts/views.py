@@ -17,10 +17,12 @@ def token_required(func):
                     auth_token, current_app.config['SECRET_KEY'])
             except:
                 # token is invalid
+                print("token is invalid")
                 return ({"Unauthorized": "You must be logged in"}, 401)
             return func(*args, **kwargs)
         else:
             # Token is not present
+            print("token is not present")
             return ({"Unauthorized": "You must be logged in"}, 401)
     return wrapper_function
 
@@ -45,12 +47,14 @@ class RegisterView(MethodView):
         if user is not None:
             return ({'message': 'Email is already used by someone'}, 409)
         else:
+            encoded_token = jwt.encode(
+                {'email': email}, current_app.config['SECRET_KEY'], algorithm='HS256')
             cursor.execute(
                 "insert into users (first_name, last_name, email, password) values (%s, %s, %s, %s);",
                 (first_name, last_name, email, generate_password_hash(password))
             )
             connection.commit()
-            return ({"message": "Registered successfully"}, 201)
+            return ({"message": "Registered successfully", "token": "token = " + encoded_token.decode('UTF-8')}, 201)
 
 
 class LoginView(MethodView):

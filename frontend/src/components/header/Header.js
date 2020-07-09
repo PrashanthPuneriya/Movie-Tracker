@@ -1,24 +1,33 @@
+/* eslint-disable no-unused-expressions */
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Header.module.css';
+import GlobalStateContext from '../GlobalStateContext.js';
 
 
 class Header extends React.Component {
+    static contextType = GlobalStateContext
     state = {
         close: true,
     }
 
     toggleNavBarBtn = () => {
-        this.setState(
-            {
-                close: !this.state.close,
-            }
-        );
+        this.setState((prevState) => ({ close: !prevState.close }));
+    }
+
+    componentDidUpdate() {
+        const context = this.context;
+        this.token = context.getTokenFromCookieHandler;
+        if (this.token !== null) {
+            context.changeLoggedInStatusHandler;
+        }
     }
 
     render() {
+        const context = this.context;
+        const isLoggedIn = context.state.isLoggedIn
         const navstyles = [styles['navbar-links']];
-        if(this.state.close !== true) {
+        if (this.state.close !== true) {
             navstyles.push(styles.active)
         }
         return (
@@ -30,23 +39,32 @@ class Header extends React.Component {
                         <span className={styles.bar}></span>
                         <span className={styles.bar}></span>
                     </div>
-                    <ul className={navstyles.join(" ")} onClick={this.toggleNavBarBtn.bind(this)}>
-                        <Link to="/" className={styles.li}>
-                            <li>home</li>
-                        </Link>
-                        <Link to="/register" className={styles.li}>
-                            <li>register</li>
-                        </Link>
-                        <Link to="/login" className={styles.li}>
-                            <li>login</li>
-                        </Link>
-                        <Link to="/logout" className={styles.li}>
-                            <li>logout</li>
-                        </Link>
-                        <Link to="/profile" className={styles.li}>
-                            <li>profile</li>
-                        </Link>
-                    </ul>
+                    {
+                        isLoggedIn ?
+                            <ul className={navstyles.join(" ")} onClick={this.toggleNavBarBtn.bind(this)}>
+                                <Link to="/" className={styles.li}>
+                                    <li>home</li>
+                                </Link>
+                                <Link to="/profile" className={styles.li}>
+                                    <li>profile</li>
+                                </Link>
+                                <Link to="/login" className={styles.li} onClick={context.deleteTokenFromCookieHandler}>
+                                    <li>logout</li>
+                                </Link>
+                            </ul>
+                            :
+                            <ul className={navstyles.join(" ")} onClick={this.toggleNavBarBtn.bind(this)}>
+                                <Link to="/" className={styles.li}>
+                                    <li>home</li>
+                                </Link>
+                                <Link to="/register" className={styles.li}>
+                                    <li>register</li>
+                                </Link>
+                                <Link to="/login" className={styles.li}>
+                                    <li>login</li>
+                                </Link>
+                            </ul>
+                    }
                 </nav>
             </header>
         );

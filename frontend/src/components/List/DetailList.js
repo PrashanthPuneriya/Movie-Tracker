@@ -1,14 +1,25 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
+import GlobalStateContext from '../GlobalStateContext.js';
+
 
 class DetailList extends React.Component {
-
+    static contextType = GlobalStateContext;
     state = {
+        shouldRedirectAfterSuccessfulDelete: false,
         currentListID: null,
         movies: []
     }
 
     getListDetailsHandler = (currentListID) => {
-        fetch(`http://localhost:5000/api/my-lists/${currentListID}`)
+        let context = this.context;
+        let token = context.getTokenFromCookieHandler();
+        fetch(`http://localhost:5000/api/my-lists/${currentListID}/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+        })
             .then((response) => response.json())
             .then((data) => {
                 this.setState({ movies: data })
@@ -20,16 +31,18 @@ class DetailList extends React.Component {
 
     deleteListHandler = (event) => {
         event.preventDefault();
+        let context = this.context;
+        let token = context.getTokenFromCookieHandler();
         const currentListID = this.state.currentListID;
-        fetch(`http://localhost:5000/api/my-lists/${currentListID}`, {
+        fetch(`http://localhost:5000/api/my-lists/${currentListID}/`, {
             method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
         })
-            .then((response) => {
-                console.log(response);
-                return response.json()
-            })
-            .then((data) => {
-                console.log(data);
+            .then((response) => response.json())
+            .then(() => {
+                this.setState({shouldRedirectAfterSuccessfulDelete: !this.state.shouldRedirectAfterSuccessfulDelete})
             })
             .catch((error) => {
                 console.log('Error:', error);
@@ -38,14 +51,22 @@ class DetailList extends React.Component {
 
     componentDidMount() {
         const currentListID = this.props.match.params.id;
-        this.setState({ currentListID: currentListID });
-        this.getListDetailsHandler(currentListID)
+        this.setState({ currentListID: currentListID, });
+        this.getListDetailsHandler(currentListID);
     }
 
     render() {
-        return (
+        const context = this.context;
+        const shouldRedirectAfterSuccessfulDelete = this.state.shouldRedirectAfterSuccessfulDelete;
+        if (!context.state.isLoggedIn) {
+            return <Redirect to={{ pathname: "/login", message: "You are not logged in!" }} />
+        }
+        else if (shouldRedirectAfterSuccessfulDelete) {
+            return <Redirect to="/profile" />
+        }
+        else return (
             <div>
-                <button onClick={this.deleteListHandler}>Delete this list</button>
+                <button to="/profile" onClick={this.deleteListHandler}>Delete this list</button>
                 <div className="ListOfMovies">
                     {
                         this.state.movies.map((movie) => {

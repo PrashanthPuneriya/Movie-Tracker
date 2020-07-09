@@ -1,11 +1,10 @@
 import React from 'react';
 import styles from './MovieDetail.module.css';
-
 import MoviesList from '../MoviesList/MoviesList.js';
-
+import GlobalStateContext from '../../GlobalStateContext.js';
 
 class MovieDetail extends React.Component {
-
+    static contextType = GlobalStateContext;
     state = {
         movie: null,
         nextMovieID: null,
@@ -22,7 +21,7 @@ class MovieDetail extends React.Component {
                 this.setState({ movie: data })
             })
             .catch((error) => {
-                console.log('Error: ', error);
+                console.error('Error: ', error);
             });
     }
 
@@ -33,12 +32,19 @@ class MovieDetail extends React.Component {
                 this.setState({ moviesList: [...data.results] });
             })
             .catch((error) => {
-                console.log('Error: ', error);
+                console.error('Error: ', error);
             });
     }
 
     getMyListsHandler = () => {
-        fetch(`http://localhost:5000/api/my-lists/`)
+        let context = this.context;
+        let token = context.getTokenFromCookieHandler();
+        fetch(`http://localhost:5000/api/my-lists/`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+        })
             .then((response) => response.json())
             .then((data) => {
                 this.setState({ lists: data }) // Update the lists state to display all the user lists
@@ -48,20 +54,19 @@ class MovieDetail extends React.Component {
             });
     }
 
-    addToMyListHanlder = (list_id) => {
+    addMovieToMyListHandler = (list_id) => {
+        let context = this.context;
+        let token = context.getTokenFromCookieHandler();
         let object = { 'movie_id': this.state.movie.id, 'movie_title': this.state.movie.title }
-        console.log(object);
         fetch(`http://localhost:5000/api/my-lists/${list_id}/movie/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(object),
         })
             .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-            })
             .catch((error) => {
                 console.error(error);
             });
@@ -81,6 +86,7 @@ class MovieDetail extends React.Component {
     }
 
     render() {
+        const context = this.context;
         return (
             this.state.movie === null ?
                 <div className={styles.MovieDetails}>
@@ -107,17 +113,23 @@ class MovieDetail extends React.Component {
                             <p>{this.state.movie.overview}</p>
                         </div>
                     </div>
-                    {/* My Lists */}
-                    <div className="Lists">
-                        <h1>Add this movie to your List</h1>
-                        {
-                            this.state.lists.map((list) => {
-                                return (
-                                    <button key={list.id} onClick={() => this.addToMyListHanlder(list.id)}>{list.list_name}</button>
-                                );
-                            })
-                        }
-                    </div>
+                    {
+                        // User's Lists
+                        context.state.isLoggedIn
+                            ?
+                            <div className="Lists">
+                                <h1>Add this movie to your List</h1>
+                                {
+                                    this.state.lists.map((list) => {
+                                        return (
+                                            <button key={list.id} onClick={() => this.addMovieToMyListHandler(list.id)}>{list.list_name}</button>
+                                        );
+                                    })
+                                }
+                            </div>
+                            :
+                            null
+                    }
                     {/* Recommended Movies */}
                     <div className={styles["movie-recommender"]}>
                         <h1>Recommended Movies</h1>

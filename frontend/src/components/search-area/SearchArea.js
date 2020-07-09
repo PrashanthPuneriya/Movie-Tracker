@@ -20,11 +20,10 @@ class SearchArea extends React.Component {
             .then((data) => {
                 // 'data' is an object.
                 // 'results' is an array of objects which consists each movie details
-                console.log('Data: ', data);
                 this.setState({ moviesList: [...data.results] });
             })
             .catch((error) => {
-                console.log('Error: ', error);
+                console.error('Error: ', error);
             });
     }
 

@@ -16,7 +16,7 @@ def create_app(config_file='settings.py'):
     @app.after_request
     def after_request(response):
         response.headers.add('Access-Control-Allow-Origin',
-                             'http://localhost:3000')
+                             '*')
         response.headers.add('Access-Control-Allow-Credentials', 'true')
         # Headers which can be used in actual requests. This is a response to preflight requests
         response.headers.add('Access-Control-Allow-Headers',

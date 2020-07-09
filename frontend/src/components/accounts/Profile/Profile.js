@@ -1,37 +1,48 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import GlobalStateContext from '../../GlobalStateContext.js';
+
 
 class Profile extends React.Component {
-
+    static contextType = GlobalStateContext;
     state = {
         lists: [],
     }
-
     getMyListsHandler = () => {
-        fetch(`http://localhost:5000/api/my-lists/`)
+        let context = this.context;
+        let token = context.getTokenFromCookieHandler();
+        fetch(`http://localhost:5000/api/my-lists/`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
             .then((response) => response.json())
             .then((data) => {
                 this.setState({ lists: data }) // Update the lists state to display all the user lists
-                // console.log(data)
+            })
+            .catch((error) => {
+                console.error(error);
             })
     }
 
-    submitHandler = (event) => {
+    addAListHandler = (event) => {
         event.preventDefault();
+        let context = this.context;
+        let token = context.getTokenFromCookieHandler();
         let formData = new FormData(event.target);
         event.target.reset();
         let object = {};
         formData.forEach((value, key) => { object[key] = value });
         fetch(`http://localhost:5000/api/my-lists/`, {
-            method: 'POST', 
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(object),
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
                 this.getMyListsHandler(); // Fetch the updated lists from the server again
             })
             .catch((error) => {
@@ -40,14 +51,18 @@ class Profile extends React.Component {
     }
 
     componentDidMount() {
-        this.getMyListsHandler()
+        this.getMyListsHandler();
     }
 
     render() {
-        return (
+        const context = this.context;
+        if (!context.state.isLoggedIn) {
+            return <Redirect to={{ pathname: "/login", message: "You are not logged in!" }} />
+        }
+        else return (
             <div>
                 <h1>Profile Page</h1>
-                <form className="AddListForm" onSubmit={this.submitHandler}>
+                <form className="AddListForm" onSubmit={this.addAListHandler}>
                     <label>
                         Name of the list:
                         <input type="text" name="list_name" placeholder="Name of the list..." required />

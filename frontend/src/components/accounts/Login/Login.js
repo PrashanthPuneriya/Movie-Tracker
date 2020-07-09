@@ -1,53 +1,49 @@
+/* eslint-disable no-unused-expressions */
 import React from 'react';
 import { Redirect } from 'react-router-dom';
+import GlobalStateContext from '../../GlobalStateContext.js';
+
 
 class Login extends React.Component {
+    static contextType = GlobalStateContext;
     state = {
-        shouldRedirect: false,
         message: null,
     }
 
-    submitHandler = (event) => {
+    // Sets JWT token as cookie
+    submitUserCredentialsHandler = (event) => {
         event.preventDefault();
+        const context = this.context;
         let formData = new FormData(event.target);
         let object = {};
         formData.forEach((value, key) => { object[key] = value });
         fetch(`http://localhost:5000/api/login/`, {
-            method: 'POST', headers: {
-                'Content-Type': 'application/json'
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(object),
         })
-            .then((response) => {
-                if (response.status === 200) {
-                    // if this is called then further down this logic shouldn't update the state.
-                    // Hence, to avoid updating state we use componentWillUnmount() as a workaround.
-                    this.setState({ shouldRedirect: !this.state.shouldRedirect })
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then((object) => {
+                const data = object.body
+                if (object.status === 200) {
+                    document.cookie = data['token']
+                    context.changeLoggedInStatusHandler();
                 }
-                console.log(response)
-                console.log(response.headers);
-                return (response.json());
-            })
-            .then((data) => {
-                console.log(data)
-                this.setState({ message: data['message'] })
+                else {
+                    this.setState({ message: data['message'] })
+                }
             })
             .catch((error) => {
                 console.error(error);
             })
     }
 
-    componentWillUnmount() {
-        // fix Warning: Can't perform a React state update on an unmounted component
-        this.setState = (state, callback) => {
-            return;
-        };
-    }
-
     render() {
-        const shouldRedirect = this.state.shouldRedirect
         let message = this.state.message;
-        if (shouldRedirect) {
+        const context = this.context;
+        if (context.state.isLoggedIn) {
             return <Redirect to="/profile" />
         }
         else return (
@@ -58,8 +54,9 @@ class Login extends React.Component {
                         :
                         null
                 }
+                <h3>{this.props.location.message}</h3> {/* This is shown when user is redirected from protected routes */}
                 <h1>Login Page</h1>
-                <form className="LoginForm" onSubmit={this.submitHandler}>
+                <form className="LoginForm" onSubmit={this.submitUserCredentialsHandler}>
                     <label>
                         Email:
                         <input type="email" name="email" placeholder="Email" required />
