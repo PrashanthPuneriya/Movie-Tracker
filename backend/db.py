@@ -4,7 +4,7 @@ import click
 from flask import current_app, g
 from flask.cli import with_appcontext
 
-from .settings import DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD
+# from .settings import DB_HOST, DB_NAME, DB_USERNAME, DB_PASSWORD
 
 
 """
@@ -19,12 +19,13 @@ def get_db():
     # During a request, every call to get_db() will return the same connection
     if 'db' not in g:
         # if the db is not connected during this app context then connect
-        g.db = psycopg2.connect(
-            host=DB_HOST,
-            database=DB_NAME,
-            user=DB_USERNAME,
-            password=DB_PASSWORD,
-        )
+        # g.db = psycopg2.connect(
+        #     host=DB_HOST,
+        #     database=DB_NAME,
+        #     user=DB_USERNAME,
+        #     password=DB_PASSWORD,
+        # )
+        g.db = psycopg2.connect(os.environ.get('DATABASE_URL'))
     return g.db
 
 
