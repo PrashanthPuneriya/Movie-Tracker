@@ -27,6 +27,7 @@ def get_db():
         #     password=DB_PASSWORD,
         # )
         g.db = psycopg2.connect(os.environ.get('DATABASE_URL'))
+
     return g.db
 
 
