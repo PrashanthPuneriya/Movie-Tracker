@@ -16,7 +16,7 @@ class DetailList extends React.Component {
         let context = this.context;
         this.setState({ isLoading: true })
         let token = context.getTokenFromCookieHandler();
-        fetch(`http://localhost:5000/api/my-lists/${currentListID}/`, {
+        fetch(`/api/my-lists/${currentListID}/`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -31,6 +31,13 @@ class DetailList extends React.Component {
                 console.log('Error: ', error);
                 this.setState({ isLoading: false })
             });
+    }
+
+    componentWillUnmount() {
+        // fix Warning: Can't perform a React state update on an unmounted component
+        this.setState = (state, callback) => {
+            return;
+        };
     }
 
     deleteListHandler = (event) => {

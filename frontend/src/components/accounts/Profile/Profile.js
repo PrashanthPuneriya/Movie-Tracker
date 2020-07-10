@@ -20,7 +20,7 @@ class Profile extends React.Component {
         event.target.reset();
         let object = {};
         formData.forEach((value, key) => { object[key] = value });
-        fetch(`http://localhost:5000/api/my-lists/`, {
+        fetch(`/api/my-lists/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -42,6 +42,13 @@ class Profile extends React.Component {
     componentDidMount() {
         const context = this.context;
         context.getMyListsHandler();
+    }
+
+    componentWillUnmount() {
+        // fix Warning: Can't perform a React state update on an unmounted component
+        this.setState = (state, callback) => {
+            return;
+        };
     }
 
     render() {

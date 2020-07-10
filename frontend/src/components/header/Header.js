@@ -23,6 +23,13 @@ class Header extends React.Component {
         }
     }
 
+    componentWillUnmount() {
+        // fix Warning: Can't perform a React state update on an unmounted component
+        this.setState = (state, callback) => {
+            return;
+        };
+    }
+
     render() {
         const context = this.context;
         const isLoggedIn = context.state.isLoggedIn
@@ -32,7 +39,7 @@ class Header extends React.Component {
         }
         return (
             <header>
-                <div className={styles.logo}>MovieTracker</div>
+                <div className={styles.logo}>FlickTracker</div>
                 <nav className={styles.navbar}>
                     <div className={styles['toggle-navbar-btn']} onClick={this.toggleNavBarBtn.bind(this)}>
                         <span className={styles.bar}></span>

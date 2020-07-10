@@ -41,7 +41,7 @@ class App extends React.Component {
 
   getMyListsHandler = () => {
     let token = this.getTokenFromCookieHandler();
-    fetch(`http://localhost:5000/api/my-lists/`, {
+    fetch(`/api/my-lists/`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }

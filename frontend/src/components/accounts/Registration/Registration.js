@@ -18,7 +18,7 @@ class Registration extends React.Component {
         let formData = new FormData(event.target);
         let object = {};
         formData.forEach((value, key) => { object[key] = value });
-        fetch(`http://localhost:5000/api/register/`, {
+        fetch(`/api/register/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -41,6 +41,13 @@ class Registration extends React.Component {
                 this.setState({ message: "Something went wrong with our server. Please try again later at some other time"})
                 this.setState({ isLoading: false })
             })
+    }
+
+    componentWillUnmount() {
+        // fix Warning: Can't perform a React state update on an unmounted component
+        this.setState = (state, callback) => {
+            return;
+        };
     }
 
     render() {

@@ -42,7 +42,7 @@ class MovieDetail extends React.Component {
         let context = this.context;
         let token = context.getTokenFromCookieHandler();
         let object = { 'movie_id': this.state.movie.id, 'movie_title': this.state.movie.title }
-        fetch(`http://localhost:5000/api/my-lists/${list_id}/movie/`, {
+        fetch(`/api/my-lists/${list_id}/movie/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -56,6 +56,12 @@ class MovieDetail extends React.Component {
             });
     }
 
+    updateNextMovieIdHandler = (nextMovieID) => {
+        this.getMovieDetailsHandler(nextMovieID);
+        this.getRecommendedMoviesHandler(nextMovieID);
+        window.scrollTo(0, 0);
+    }
+
     componentDidMount() {
         const currentMovieID = this.props.match.params.id;
         let context = this.context;
@@ -64,10 +70,11 @@ class MovieDetail extends React.Component {
         context.getMyListsHandler();
     }
 
-    updateNextMovieIdHandler = (nextMovieID) => {
-        this.getMovieDetailsHandler(nextMovieID);
-        this.getRecommendedMoviesHandler(nextMovieID);
-        window.scrollTo(0, 0);
+    componentWillUnmount() {
+        // fix Warning: Can't perform a React state update on an unmounted component
+        this.setState = (state, callback) => {
+            return;
+        };
     }
 
     render() {
