@@ -1,3 +1,6 @@
+from .lists.urls import lists
+from .accounts.urls import accounts
+from . import db
 import os
 from flask import Flask
 
@@ -8,13 +11,11 @@ app = Flask(__name__, static_folder='../frontend/build',
 # app.config.from_pyfile(config_file)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
-from . import db
 db.init_app(app)
 
-from .accounts.urls import accounts
-from .lists.urls import lists
 app.register_blueprint(accounts)
 app.register_blueprint(lists)
+
 
 @app.route('/')
 def root():
@@ -40,3 +41,7 @@ def root():
 #     return response
 
 # return app
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))
