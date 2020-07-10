@@ -17,9 +17,15 @@ app.register_blueprint(accounts)
 app.register_blueprint(lists)
 
 
-@app.route('/')
-def root():
+@app.route('/', methods=["GET"])
+def index():
     return app.send_static_file('index.html')
+
+
+@app.route('/favicon.ico', methods=["GET"])
+def favicon():
+    return app.send_static_file('favicon.ico')
+
 
 # @app.after_request
 # def after_request(response):
