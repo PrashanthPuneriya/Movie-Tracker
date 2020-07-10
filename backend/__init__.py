@@ -2,7 +2,8 @@ from flask import Flask
 
 
 def create_app(config_file='settings.py'):
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='../frontend/build',
+                static_url_path='')
     app.config.from_pyfile(config_file)
 
     from . import db
@@ -12,6 +13,10 @@ def create_app(config_file='settings.py'):
     from .lists.urls import lists
     app.register_blueprint(accounts)
     app.register_blueprint(lists)
+
+    @app.route('/')
+    def root():
+        return app.send_static_file('index.html')
 
     @app.after_request
     def after_request(response):
@@ -30,7 +35,6 @@ def create_app(config_file='settings.py'):
         # Used when issuing a preflight request to let the server know which HTTP headers will be used when the actual request is made.
         response.headers.add('Access-Control-Request-Headers',
                              'Content-Type, Authorization, Credentials')
-
         return response
 
     return app

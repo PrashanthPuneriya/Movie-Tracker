@@ -1,4 +1,4 @@
-from src import create_app
+from backend import create_app
 
 
 if __name__ == "__main__":

@@ -1,1 +1,1 @@
-web: gunicorn backend/run:name
+web: gunicorn run:name
