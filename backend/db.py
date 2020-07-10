@@ -72,7 +72,6 @@ def init_db_command():
 
 
 def init_app(app):
-
     # Registers the cli command with the flask app
     app.cli.add_command(init_db_command)
 
