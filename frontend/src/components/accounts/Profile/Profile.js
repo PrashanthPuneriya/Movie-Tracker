@@ -72,13 +72,17 @@ class Profile extends React.Component {
                 <div className={styles.DisplayListArea}>
                     <h2>Your lists</h2>
                     <div className={styles.Lists}>
-                        {
+                        {   
+                            context.state.userLists.length === 0
+                            ? 
+                                <p>Your have no lists...</p>
+                            :
                             context.state.userLists.map((list) => {
                                 return (
                                     <Link style={{ textDecoration: 'none' }} key={list.id} to={`/list/${list.id}`}>
                                         <p className={styles.ListName}>{list.list_name}</p>
                                     </Link>
-                                )
+                                );
                             })
                         }
                     </div>

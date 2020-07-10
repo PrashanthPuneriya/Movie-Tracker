@@ -5,6 +5,7 @@ import MoviesList from '../movies/MoviesList/MoviesList';
 class SearchArea extends React.Component {
     state = {
         searchTerm: '',
+        searchedForSomeMovie: false,
         moviesList: [],
         isLoading: false,
     };
@@ -15,14 +16,15 @@ class SearchArea extends React.Component {
 
     movieInputSubmitHandler = (event) => {
         event.preventDefault();
-        this.setState({ isLoading: true })
+        this.setState({ searchedForSomeMovie: true, isLoading: true })
         const apiKey = process.env.REACT_APP_API_KEY;
         fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${this.state.searchTerm}`)
             .then((response) => response.json())
             .then((data) => {
-                // 'data' is an object.
-                // 'results' is an array of objects which consists each movie details
-                this.setState({ moviesList: [...data.results], isLoading: false });
+                let arr = data.results;
+                arr = arr.sort((a, b) => b.popularity-a.popularity)
+                arr = arr.filter((movie) => movie.poster_path!==null && !movie.adult)
+                this.setState({ moviesList: [...arr], isLoading: false });
             })
             .catch((error) => {
                 console.error('Error: ', error);
@@ -34,6 +36,8 @@ class SearchArea extends React.Component {
 
     render() {
         let isLoading = this.state.isLoading;
+        let searchedForSomeMovie = this.state.searchedForSomeMovie;
+        let moviesList = this.state.moviesList;
         return (
             <>
                 <div className={styles.SearchArea}>
@@ -50,7 +54,11 @@ class SearchArea extends React.Component {
                             Loading...
                         </div>
                         :
-                        <MoviesList moviesList={this.state.moviesList} updateNextMovieIdHandler={this.updateNextMovieIdHandler} />
+                        moviesList.length === 0 && searchedForSomeMovie
+                            ?
+                            <p>Sorry! No flicks are present with that name. Make sure that flick name is correct</p>
+                            :
+                            <MoviesList moviesList={this.state.moviesList} updateNextMovieIdHandler={this.updateNextMovieIdHandler} />
                 }
             </>
         );
