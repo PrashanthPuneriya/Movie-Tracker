@@ -31,15 +31,18 @@ class Registration extends React.Component {
             .then((object) => {
                 const data = object.body
                 if (object.status === 201) {
-                    this.setState({ message: "Added this movie successfully to your list"})
+                    document.cookie = data['token']
+                    context.changeLoggedInStatusHandler();
                 }
                 else {
-                    this.setState({ message: "Sorry! Something went wrong"})
+                    this.setState({ message: data['message'] })
                 }
+                this.setState({ isLoading: false })
             })
             .catch((error) => {
                 console.error(error);
-                this.setState({ message: "Sorry! Something went wrong"})
+                this.setState({ message: "Something went wrong with our server. Please try again later at some other time" })
+                this.setState({ isLoading: false })
             })
     }
 
