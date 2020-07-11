@@ -53,6 +53,14 @@ class RegisterView(MethodView):
                 "insert into users (first_name, last_name, email, password) values (%s, %s, %s, %s);",
                 (first_name, last_name, email, generate_password_hash(password))
             )
+            cursor.execute("select id from users where email = %s;", (email, ))
+            user = cursor.fetchone()
+            connection.commit()
+            # Add two default lists for every user
+            cursor.execute(
+                "insert into lists (list_name, user_id) values (%s, %s), (%s, %s);",
+                ("Best Movies", user[0], "To Watch Movies", user[0])
+            )
             connection.commit()
             return ({"message": "Registered successfully", "token": "token = " + encoded_token.decode('UTF-8')}, 201)
 
