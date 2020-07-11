@@ -33,8 +33,8 @@ class MovieDetail extends React.Component {
             .then((response) => response.json())
             .then((data) => {
                 let arr = data.results;
-                arr = arr.sort((a, b) => b.popularity-a.popularity)
-                arr = arr.filter((movie) => movie.poster_path!==null && !movie.adult)
+                arr = arr.sort((a, b) => b.popularity - a.popularity)
+                arr = arr.filter((movie) => movie.poster_path !== null && !movie.adult)
                 this.setState({ recommendedMoviesList: [...arr] });
             })
             .catch((error) => {
@@ -84,7 +84,8 @@ class MovieDetail extends React.Component {
     render() {
         const context = this.context;
         const isLoading = this.state.isLoading;
-        let movie = this.state.movie
+        let movie = this.state.movie;
+        let recommendedMoviesList = this.state.recommendedMoviesList;
         return (
             isLoading ?
                 <div className="loader">
@@ -132,11 +133,17 @@ class MovieDetail extends React.Component {
                                 :
                                 null
                         }
-                        {/* Recommended Movies */}
-                        <div className={styles["movie-recommender"]}>
-                            <h1>Recommended Movies</h1>
-                            <MoviesList moviesList={this.state.recommendedMoviesList} updateNextMovieIdHandler={this.updateNextMovieIdHandler} />
-                        </div>
+                        {
+                            // Recommended Movies
+                            recommendedMoviesList.length === 0
+                                ?
+                                null
+                                :
+                                <div className={styles["movie-recommender"]}>
+                                    <h1>Recommended Movies</h1>
+                                    <MoviesList moviesList={this.state.recommendedMoviesList} updateNextMovieIdHandler={this.updateNextMovieIdHandler} />
+                                </div>
+                        }
                     </div>
                     :
                     null
