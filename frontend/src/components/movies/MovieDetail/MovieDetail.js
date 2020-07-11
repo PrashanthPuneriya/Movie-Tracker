@@ -59,18 +59,15 @@ class MovieDetail extends React.Component {
             .then((object) => {
                 const data = object.body
                 if (object.status === 201) {
-                    document.cookie = data['token']
-                    context.changeLoggedInStatusHandler();
+                    this.setState({ message: "Successfully added to your list" })
                 }
                 else {
-                    this.setState({ message: data['message'] })
+                    this.setState({ message: "Sorry! Something went wrong" })
                 }
-                this.setState({ isLoading: false })
             })
             .catch((error) => {
                 console.error(error);
-                this.setState({ message: "Something went wrong with our server. Please try again later at some other time" })
-                this.setState({ isLoading: false })
+                this.setState({ message: "Sorry! Something went wrong" })
             })
     }
 
@@ -139,17 +136,19 @@ class MovieDetail extends React.Component {
                                         {
                                             message
                                                 ?
-                                                <p>{message}</p>
+                                                <h4>{message}</h4>
                                                 :
                                                 null
                                         }
-                                        {
-                                            context.state.userLists.map((list) => {
-                                                return (
-                                                    <button className={styles.AddMovieToListButton} key={list.id} onClick={() => this.addMovieToMyListHandler(list.id)}>{list.list_name}</button>
-                                                );
-                                            })
-                                        }
+                                        <div className={styles.UserListsButtons}>
+                                            {
+                                                context.state.userLists.map((list) => {
+                                                    return (
+                                                        <button className={styles.AddMovieToListButton} key={list.id} onClick={() => this.addMovieToMyListHandler(list.id)}>{list.list_name}</button>
+                                                    );
+                                                })
+                                            }
+                                        </div>
                                     </div>
                                 </>
                                 :

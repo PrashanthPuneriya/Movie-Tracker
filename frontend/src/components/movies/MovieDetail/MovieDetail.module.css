@@ -31,7 +31,7 @@ h1 {
     margin: 2vh 2.5vw;
 }
 
-.UserLists {
+.UserListsButtons {
     width: 80vw;
     display: flex;
     flex-direction: row;
