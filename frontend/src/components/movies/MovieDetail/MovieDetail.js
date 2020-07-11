@@ -11,6 +11,7 @@ class MovieDetail extends React.Component {
         nextMovieID: null,
         recommendedMoviesList: [],
         isLoading: false,
+        message: null,
     };
 
     apiKey = process.env.REACT_APP_API_KEY;
@@ -54,10 +55,23 @@ class MovieDetail extends React.Component {
             },
             body: JSON.stringify(object),
         })
-            .then((response) => response.json())
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then((object) => {
+                const data = object.body
+                if (object.status === 201) {
+                    document.cookie = data['token']
+                    context.changeLoggedInStatusHandler();
+                }
+                else {
+                    this.setState({ message: data['message'] })
+                }
+                this.setState({ isLoading: false })
+            })
             .catch((error) => {
                 console.error(error);
-            });
+                this.setState({ message: "Something went wrong with our server. Please try again later at some other time" })
+                this.setState({ isLoading: false })
+            })
     }
 
     updateNextMovieIdHandler = (nextMovieID) => {
@@ -86,6 +100,7 @@ class MovieDetail extends React.Component {
         const isLoading = this.state.isLoading;
         let movie = this.state.movie;
         let recommendedMoviesList = this.state.recommendedMoviesList;
+        let message = this.state.message;
         return (
             isLoading ?
                 <div className="loader">
@@ -121,6 +136,13 @@ class MovieDetail extends React.Component {
                                 <>
                                     <h1>Add this movie to your List</h1>
                                     <div className={styles.UserLists}>
+                                        {
+                                            message
+                                                ?
+                                                <p>{message}</p>
+                                                :
+                                                null
+                                        }
                                         {
                                             context.state.userLists.map((list) => {
                                                 return (
