@@ -1,4 +1,5 @@
 import jwt
+from datetime import datetime
 from flask import make_response, request, redirect, url_for, session, current_app
 from flask.views import MethodView
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -89,6 +90,11 @@ class LoginView(MethodView):
             # )
             # encoded_token.decode('utf-8') is used to make the token readable
             # connection.commit()
+
+            cursor.execute(
+                "update users set last_logged_in=now();"
+            )
+            connection.commit()
             response = make_response(
                 {"message": "Logged in successfully", "token": "token = " + encoded_token.decode('UTF-8')}, 200)
             return response
