@@ -46,7 +46,7 @@ class DetailList extends React.Component {
         let context = this.context;
         let token = context.getTokenFromCookieHandler();
         const currentListID = this.state.currentListID;
-        fetch(`http://localhost:5000/api/my-lists/${currentListID}/`, {
+        fetch(`/api/my-lists/${currentListID}/`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`
