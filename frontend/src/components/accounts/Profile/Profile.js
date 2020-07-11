@@ -8,12 +8,12 @@ class Profile extends React.Component {
     static contextType = GlobalStateContext;
 
     state = {
-        isLoading: false,
+        areListsLoading: false,
     }
 
     createListHandler = (event) => {
         event.preventDefault();
-        this.setState({ isLoading: true })
+        this.setState({ areListsLoading: true })
         let context = this.context;
         let token = context.getTokenFromCookieHandler();
         let formData = new FormData(event.target);
@@ -31,11 +31,11 @@ class Profile extends React.Component {
             .then((response) => response.json())
             .then((data) => {
                 context.getMyListsHandler(); // Fetch the updated lists from the server again
-                this.setState({ isLoading: false })
+                this.setState({ areListsLoading: false })
             })
             .catch((error) => {
                 console.error(error);
-                this.setState({ isLoading: false })
+                this.setState({ areListsLoading: false })
             })
     }
 
@@ -53,12 +53,9 @@ class Profile extends React.Component {
 
     render() {
         const context = this.context;
-        let isLoading = this.state.isLoading;
+        let areListsLoading = this.state.areListsLoading;
         if (!context.state.isLoggedIn) {
             return <Redirect to={{ pathname: "/login", message: "You are not logged in!" }} />
-        }
-        else if (isLoading) {
-            return <div className="loader">Loading...</div>
         }
         else return (
             <div>
@@ -71,21 +68,27 @@ class Profile extends React.Component {
                 </div>
                 <div className={styles.DisplayListArea}>
                     <h2>Your lists</h2>
-                    <div className={styles.Lists}>
-                        {   
-                            context.state.userLists.length === 0
-                            ? 
-                                <p>Your have no lists...</p>
+                    {
+                        areListsLoading
+                            ?
+                            <div className="loader">Loading...</div>
                             :
-                            context.state.userLists.map((list) => {
-                                return (
-                                    <Link style={{ textDecoration: 'none' }} key={list.id} to={`/list/${list.id}`}>
-                                        <p className={styles.ListName}>{list.list_name}</p>
-                                    </Link>
-                                );
-                            })
-                        }
-                    </div>
+                            <div className={styles.Lists}>
+                                {
+                                    context.state.userLists.length === 0
+                                        ?
+                                        <p>Your have no lists...</p>
+                                        :
+                                        context.state.userLists.map((list) => {
+                                            return (
+                                                <Link style={{ textDecoration: 'none' }} key={list.id} to={`/list/${list.id}`}>
+                                                    <p className={styles.ListName}>{list.list_name}</p>
+                                                </Link>
+                                            );
+                                        })
+                                }
+                            </div>
+                    }
                 </div>
             </div>
         );
