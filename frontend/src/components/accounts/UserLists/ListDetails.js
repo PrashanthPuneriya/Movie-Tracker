@@ -33,13 +33,6 @@ class ListDetails extends React.Component {
             });
     }
 
-    componentWillUnmount() {
-        // fix Warning: Can't perform a React state update on an unmounted component
-        this.setState = (state, callback) => {
-            return;
-        };
-    }
-
     deleteListHandler = (event) => {
         event.preventDefault();
         this.setState({ isLoading: true })
@@ -67,6 +60,13 @@ class ListDetails extends React.Component {
         const currentListID = this.props.match.params.id;
         this.setState({ currentListID: currentListID, });
         this.getListDetailsHandler(currentListID);
+    }
+
+    componentWillUnmount() {
+        // fix Warning: Can't perform a React state update on an unmounted component
+        this.setState = (state, callback) => {
+            return;
+        };
     }
 
     render() {
