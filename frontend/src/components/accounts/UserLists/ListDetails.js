@@ -1,9 +1,9 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import GlobalStateContext from '../GlobalStateContext.js';
-import styles from './DetailList.module.css';
+import GlobalStateContext from '../../GlobalStateContext.js';
+import styles from './ListDetails.module.css';
 
-class DetailList extends React.Component {
+class ListDetails extends React.Component {
     static contextType = GlobalStateContext;
     state = {
         shouldRedirectAfterSuccessfulDelete: false,
@@ -99,4 +99,4 @@ class DetailList extends React.Component {
     }
 }
 
-export default DetailList;
+export default ListDetails;

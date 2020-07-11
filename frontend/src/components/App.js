@@ -6,7 +6,7 @@ import MovieDetail from './movies/MovieDetail/MovieDetail';
 import Registration from './accounts/Registration/Registration';
 import Login from './accounts/Login/Login';
 import Profile from './accounts/Profile/Profile';
-import DetailList from './List/DetailList';
+import ListDetails from './accounts/UserLists/ListDetails';
 
 import GlobalStateContext from './GlobalStateContext.js';
 
@@ -74,7 +74,7 @@ class App extends React.Component {
             <Route path="/register" component={Registration} exact />
             <Route path="/login" component={Login} exact />
             <Route path="/profile" component={Profile} exact />
-            <Route path="/list/:id" component={DetailList} exact />
+            <Route path="/list/:id" component={ListDetails} exact />
           </Switch>
         </BrowserRouter>
       </GlobalStateContext.Provider>
