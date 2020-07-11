@@ -20,10 +20,11 @@ class MovieDetail extends React.Component {
         fetch(`https://api.themoviedb.org/3/movie/${currentMovieID}?api_key=${this.apiKey}`)
             .then((response) => response.json())
             .then((data) => {
-                this.setState({ movie: data, isLoading: false })
+                this.setState({ movie: data, isLoading: false });
             })
             .catch((error) => {
                 console.error('Error: ', error);
+                this.setState({ isLoading: false });
             });
     }
 
@@ -31,7 +32,10 @@ class MovieDetail extends React.Component {
         fetch(`https://api.themoviedb.org/3/movie/${currentMovieID}/recommendations?api_key=${this.apiKey}`)
             .then((response) => response.json())
             .then((data) => {
-                this.setState({ recommendedMoviesList: [...data.results] });
+                let arr = data.results;
+                arr = arr.sort((a, b) => b.popularity-a.popularity)
+                arr = arr.filter((movie) => movie.poster_path!==null && !movie.adult)
+                this.setState({ recommendedMoviesList: [...arr] });
             })
             .catch((error) => {
                 console.error('Error: ', error);
