@@ -16,10 +16,14 @@ def create_app(config_file='settings.py'):
     app.register_blueprint(accounts)
     app.register_blueprint(lists)
 
-    @app.route('/', defaults={'path1': '', 'path2': ''})
-    @app.route('/<path:path1>', defaults={'path2': ''})
-    @app.route('/<path:path1>/<path:path2>')
-    def index(path1, path2):
+    # @app.route('/', defaults={'path1': '', 'path2': ''})
+    # @app.route('/<path:path1>', defaults={'path2': ''})
+    # @app.route('/<path:path1>/<path:path2>')
+    # def index(path1, path2):
+    #     return app.send_static_file('index.html')
+
+    @app.route('/', methods=["GET"])
+    def index():
         return app.send_static_file('index.html')
 
     @app.route('/favicon.ico', methods=["GET"])
